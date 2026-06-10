@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAP_MKI | 商業廣告 AI 評估系統</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Markdown Parser (marked) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        .loader {
+            border-top-color: #3b82f6;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Prose styles for markdown */
+        .prose h3 { color: #e2e8f0; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; }
+        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; }
+        .prose li { margin-bottom: 0.25em; }
+        .prose strong { color: #93c5fd; }
+        
+        /* Tab Styles */
+        .ad-tab { @apply px-3 py-1.5 text-xs font-medium rounded-t-lg border-t border-l border-r border-transparent cursor-pointer transition-colors; }
+        .ad-tab.active { @apply bg-slate-800 border-slate-700 text-blue-400; }
+        .ad-tab.inactive { @apply bg-slate-900/50 text-slate-500 hover:text-slate-300; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="glass-panel sticky top-0 z-50 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-brain text-purple-500 text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-tight">GAP_MKI <span class="text-xs font-normal text-slate-400 ml-2 border border-slate-600 px-2 py-0.5 rounded-full">Stable</span></h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="demoDataBtn" class="hidden md:block text-xs text-slate-400 hover:text-white underline">填入範例資料</button>
+                <div id="apiKeyStatus" class="hidden text-xs px-2 py-1 rounded bg-green-500/20 text-green-400 border border-green-500/50">Key Ready</div>
+                <button onclick="openSettings()" class="text-slate-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-gear text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Inputs -->
+        <section class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- Step 1: Product Context -->
+            <div class="glass-panel rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-white"><i class="fa-solid fa-box-open mr-2 text-blue-400"></i>產品情境</h2>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-1">產品/服務名稱與描述</label>
+                        <textarea id="productDesc" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600" placeholder="例如：一款能夠自動清潔且不會卡毛髮的智慧型掃地機器人..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-sm font-medium text-slate-400">目標客群 (Target Audience)</label>
+                            <button onclick="autoGenerateTA()" id="btnAutoTA" class="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300 transition-colors" title="根據產品描述自動生成">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> 自動生成
+                            </button>
+                        </div>
+                        <input type="text" id="targetAudience" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder-slate-600" placeholder="例如：30-45歲，家中有養寵物的雙薪家庭">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Ad Copy (Multi-Ad Support) -->
+            <div class="glass-panel rounded-xl p-6 flex-grow flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-white"><i class="fa-solid fa-bullhorn mr-2 text-purple-400"></i>廣告文案</h2>
+                    <span class="text-xs text-slate-500">可新增多則進行比較</span>
+                </div>
+
+                <!-- Ad Tabs -->
+                <div class="flex items-center gap-1 mb-0 overflow-x-auto" id="adTabsContainer">
+                    <!-- Tabs injected by JS -->
+                </div>
+                <div class="bg-slate-800 border border-slate-700 rounded-b-lg rounded-tr-lg p-3 flex-grow flex flex-col min-h-[200px]">
+                    <textarea id="currentAdInput" class="flex-grow w-full bg-transparent border-none text-sm focus:ring-0 focus:outline-none transition-all placeholder-slate-600 font-mono resize-none" placeholder="在此貼上您的廣告文案..."></textarea>
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-slate-700/50">
+                         <span class="text-xs text-slate-500" id="adCounter">Ad 1</span>
+                         <button onclick="removeCurrentAd()" class="text-xs text-red-400 hover:text-red-300"><i class="fa-solid fa-trash-can"></i> 刪除此則</button>
+                    </div>
+                </div>
+                
+                <div class="mt-4 space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                         <div>
+                            <label class="block text-xs text-slate-400 mb-1">單則評測人數</label>
+                            <select id="personaCount" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-2 text-sm text-slate-200 focus:outline-none">
+                                <option value="3" selected>3 (快速)</option>
+                                <option value="5">5 (標準)</option>
+                                <option value="10">10 (深度)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">評測模式</label>
+                            <select id="evalMode" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-2 text-sm text-slate-200 focus:outline-none">
+                                <option value="balanced" selected>均衡 (TA + 路人)</option>
+                                <option value="strict">嚴格 (高標準TA)</option>
+                                <option value="fan">鐵粉 (易感TA)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="startBtn" onclick="startSimulation()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform transition hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-play"></i> 開始評測 (防崩潰模式)
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Simulation & Results -->
+        <section class="lg:col-span-8 flex flex-col gap-6 h-full min-h-[500px]">
+            
+            <!-- View: Empty State -->
+            <div id="emptyState" class="glass-panel rounded-xl p-12 flex flex-col items-center justify-center h-full text-center border-dashed border-2 border-slate-700">
+                <div class="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-6 relative">
+                    <i class="fa-solid fa-shield-halved text-4xl text-slate-600"></i>
+                    <div class="absolute -right-2 -bottom-2 bg-green-500 rounded-full w-8 h-8 flex items-center justify-center border-4 border-[#0f172a]">
+                        <i class="fa-solid fa-check text-white text-xs"></i>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">GAP_MKI 穩定版</h3>
+                <p class="text-slate-400 max-w-md mb-6">已啟用 API 速率限制保護。系統將以序列方式處理請求，以防止「Rate Limit Exceeded」錯誤。</p>
+                <div class="flex flex-wrap justify-center gap-3 text-xs text-slate-500">
+                    <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700"><i class="fa-solid fa-shield-cat text-green-500 mr-1"></i> 自動防崩潰</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i> 智能重試</span>
+                </div>
+            </div>
+
+            <!-- View: Processing / Terminal -->
+            <div id="consoleView" class="hidden glass-panel rounded-xl p-0 overflow-hidden flex flex-col h-full max-h-[800px]">
+                <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+                    <span class="text-xs font-mono text-green-400 flex items-center gap-2"><i class="fa-solid fa-terminal"></i> Simulation Terminal</span>
+                    <div class="flex gap-1.5">
+                        <div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+                    </div>
+                </div>
+                <div id="logContainer" class="flex-grow p-4 overflow-y-auto font-mono text-xs space-y-3 bg-slate-950/80">
+                    <!-- Logs injected here -->
+                </div>
+                <div class="p-4 bg-slate-900 border-t border-slate-700">
+                    <div class="flex justify-between mb-2 text-xs text-slate-400">
+                        <span id="progressText">Initializing...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                        <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-300 w-0"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View: Results Dashboard -->
+            <div id="resultsView" class="hidden flex flex-col gap-6 fade-in pb-10">
+                
+                <!-- Result Tabs -->
+                <div class="flex gap-2 border-b border-slate-700 pb-2 overflow-x-auto" id="resultTabsContainer">
+                    <!-- Tabs injected here -->
+                </div>
+
+                <!-- 1. Verification Alert (If any) -->
+                <div id="verificationPanel" class="hidden glass-panel p-4 rounded-xl border-l-4 border-yellow-500 bg-yellow-500/5">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-triangle-exclamation text-yellow-500 mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-yellow-500">真實性檢測報告 (共用)</h4>
+                            <p id="verificationText" class="text-xs text-slate-300 mt-1 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. KPI Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass-panel p-5 rounded-xl border-t-2 border-green-500 relative overflow-hidden group hover:bg-slate-800/80 transition-all">
+                        <div class="absolute -right-4 -top-4 text-green-500/10 text-6xl group-hover:text-green-500/20 transition-all"><i class="fa-solid fa-cart-shopping"></i></div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">購買率 (Buy Rate)</p>
+                        <p id="resBuyRate" class="text-3xl font-bold text-white mt-2">--%</p>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl border-t-2 border-blue-500 relative overflow-hidden group hover:bg-slate-800/80 transition-all">
+                        <div class="absolute -right-4 -top-4 text-blue-500/10 text-6xl group-hover:text-blue-500/20 transition-all"><i class="fa-solid fa-star"></i></div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">品質分數 (QS)</p>
+                        <p id="resQualityScore" class="text-3xl font-bold text-white mt-2">--</p>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl border-t-2 border-purple-500 hover:bg-slate-800/80 transition-all">
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">最強優勢</p>
+                        <p id="resTopMetric" class="text-sm font-bold text-purple-300 mt-3 truncate">--</p>
+                        <div class="w-full bg-slate-700 h-1 mt-2 rounded-full"><div id="resTopBar" class="bg-purple-500 h-1 rounded-full" style="width: 0%"></div></div>
+                    </div>
+                    <div class="glass-panel p-5 rounded-xl border-t-2 border-red-500 hover:bg-slate-800/80 transition-all">
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">最大抗性</p>
+                        <p id="resLowMetric" class="text-sm font-bold text-red-300 mt-3 truncate">--</p>
+                        <div class="w-full bg-slate-700 h-1 mt-2 rounded-full"><div id="resLowBar" class="bg-red-500 h-1 rounded-full" style="width: 0%"></div></div>
+                    </div>
+                </div>
+
+                <!-- 3. Charts & Analysis -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Radar Chart -->
+                    <div class="glass-panel p-6 rounded-xl flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-sm font-bold text-slate-200"><i class="fa-solid fa-chart-radar mr-2 text-blue-400"></i>五大心理維度分析</h4>
+                        </div>
+                        <div class="relative flex-grow min-h-[250px] w-full">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Insight -->
+                    <div class="glass-panel p-6 rounded-xl flex flex-col h-full">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                            <h4 class="text-sm font-bold text-slate-200"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-purple-400"></i>AI 總結洞察</h4>
+                            <button onclick="downloadReport()" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-2 py-1 rounded transition-colors"><i class="fa-solid fa-download mr-1"></i>匯出</button>
+                        </div>
+                        <div id="aiSummary" class="text-sm text-slate-300 leading-relaxed overflow-y-auto max-h-[300px] prose prose-invert">
+                            分析中...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Persona Feedback Cards -->
+                <div class="glass-panel p-6 rounded-xl">
+                    <h4 class="text-sm font-bold text-slate-200 mb-4 flex items-center">
+                        <i class="fa-solid fa-users mr-2 text-slate-400"></i>
+                        虛擬受眾詳細反饋
+                        <span id="personaCountLabel" class="ml-2 text-xs bg-slate-700 px-2 py-0.5 rounded-full text-slate-300">0</span>
+                    </h4>
+                    <div id="personasContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2">
+                        <!-- Persona Cards Injected Here -->
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button onclick="resetSimulation()" class="text-slate-500 hover:text-white text-sm transition-colors">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> 重新測試
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center fade-in">
+        <div class="glass-panel p-8 rounded-xl max-w-md w-full mx-4 shadow-2xl border border-slate-600">
+            <h3 class="text-xl font-bold text-white mb-4">系統設定</h3>
+            <p class="text-sm text-slate-400 mb-6">請輸入您的 OpenRouter API Key（本系統使用 <span class="text-purple-300">google/gemini-2.5-flash-lite</span>）。您的 Key 僅會儲存在瀏覽器的 LocalStorage 中，不會傳送至任何第三方伺服器。</p>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-slate-300 mb-1">OpenRouter API Key</label>
+                <div class="relative">
+                    <input type="password" id="apiKeyInput" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none text-white pr-10" placeholder="sk-or-v1-...">
+                    <button onclick="togglePasswordVisibility()" class="absolute right-3 top-3 text-slate-500 hover:text-slate-300">
+                        <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">
+                    <i class="fa-solid fa-key"></i> 需要 API Key? <a href="https://openrouter.ai/keys" target="_blank" class="text-blue-400 hover:underline">前往 OpenRouter 取得</a>。
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="closeSettings()" class="px-4 py-2 text-sm text-slate-300 hover:text-white">取消</button>
+                <button onclick="saveSettings()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-lg transition-colors">儲存設定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // --- Global State ---
+        const state = {
+            apiKey: localStorage.getItem('gap_mki_api_key') || '',
+            product: '',
+            ta: '',
+            ads: [{ id: 1, content: '' }], // Support multiple ads
+            activeAdTab: 1, // Current Input Tab
+            activeResultTab: 1, // Current Result Tab
+            count: 3,
+            mode: 'balanced',
+            logs: [],
+            results: {}, // Map of adId -> { evaluations, summary }
+            verificationReport: null,
+            isSimulating: false
+        };
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (state.apiKey) {
+                document.getElementById('apiKeyStatus').classList.remove('hidden');
+                document.getElementById('apiKeyInput').value = state.apiKey;
+            } else {
+                openSettings(); 
+            }
+            renderAdTabs();
+        });
+
+        // --- Multi-Ad Input Logic ---
+        function renderAdTabs() {
+            const container = document.getElementById('adTabsContainer');
+            container.innerHTML = '';
+            
+            state.ads.forEach((ad, index) => {
+                const btn = document.createElement('div');
+                const isActive = ad.id === state.activeAdTab;
+                btn.className = `ad-tab ${isActive ? 'active' : 'inactive'}`;
+                btn.innerText = `廣告 ${index + 1}`;
+                btn.onclick = () => switchAdTab(ad.id);
+                container.appendChild(btn);
+            });
+
+            // Add Button
+            const addBtn = document.createElement('button');
+            addBtn.className = "px-3 py-1 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-full transition-colors ml-1";
+            addBtn.innerHTML = '<i class="fa-solid fa-plus text-xs"></i>';
+            addBtn.onclick = addNewAd;
+            container.appendChild(addBtn);
+
+            // Set Content
+            const activeAd = state.ads.find(a => a.id === state.activeAdTab);
+            document.getElementById('currentAdInput').value = activeAd ? activeAd.content : '';
+            document.getElementById('adCounter').innerText = `廣告 ${state.ads.findIndex(a => a.id === state.activeAdTab) + 1}`;
+        }
+
+        function switchAdTab(id) {
+            // Save current content first
+            saveCurrentAdContent();
+            state.activeAdTab = id;
+            renderAdTabs();
+        }
+
+        function saveCurrentAdContent() {
+            const currentContent = document.getElementById('currentAdInput').value;
+            const activeAdIndex = state.ads.findIndex(a => a.id === state.activeAdTab);
+            if (activeAdIndex !== -1) {
+                state.ads[activeAdIndex].content = currentContent;
+            }
+        }
+        
+        // Auto-save on typing
+        document.getElementById('currentAdInput').addEventListener('input', saveCurrentAdContent);
+
+        function addNewAd() {
+            saveCurrentAdContent();
+            const newId = state.ads.length > 0 ? Math.max(...state.ads.map(a => a.id)) + 1 : 1;
+            state.ads.push({ id: newId, content: '' });
+            state.activeAdTab = newId;
+            renderAdTabs();
+        }
+
+        function removeCurrentAd() {
+            if (state.ads.length <= 1) {
+                alert("至少需要保留一則廣告");
+                return;
+            }
+            if (!confirm("確定要刪除此則廣告嗎？")) return;
+
+            state.ads = state.ads.filter(a => a.id !== state.activeAdTab);
+            state.activeAdTab = state.ads[0].id; // Switch to first
+            renderAdTabs();
+        }
+
+
+        // --- Chart Instance ---
+        let radarChartInstance = null;
+
+        // --- Helper: Delay ---
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        // --- API Client (OpenRouter -> Gemini 2.5 Flash Lite) with Smart Rate Limiting ---
+        async function callGemini(prompt, systemInstruction = "", jsonMode = true) {
+            if (!state.apiKey) throw new Error("API Key Missing");
+
+            const model = "google/gemini-2.5-flash-lite";
+            const url = "https://openrouter.ai/api/v1/chat/completions";
+
+            const messages = [];
+            if (systemInstruction) {
+                messages.push({ role: "system", content: systemInstruction });
+            }
+            messages.push({ role: "user", content: prompt });
+
+            const payload = {
+                model: model,
+                messages: messages,
+                temperature: 0.7,
+                max_tokens: 8000
+            };
+
+            if (jsonMode) {
+                payload.response_format = { type: "json_object" };
+            }
+
+            // Retry Logic with Rate Limit Handling
+            let attempts = 0;
+            const maxAttempts = 5;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${state.apiKey}`,
+                            'HTTP-Referer': window.location.origin || 'https://gap-mki.local',
+                            'X-Title': 'GAP_MKI'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+
+                        // Handle 429 Specifically
+                        if (response.status === 429) {
+                            attempts++;
+                            const waitTime = 10000 + (attempts * 2000); // 10s, 12s, 14s...
+                            log(`⚠️ API 請求過多 (Rate Limit)，暫停 ${waitTime/1000} 秒後重試...`, 'error');
+                            await delay(waitTime);
+                            continue; // Retry
+                        }
+
+                        // Handle 502/503 (Overloaded / Bad Gateway)
+                        if (response.status === 503 || response.status === 502) {
+                             attempts++;
+                             log(`⚠️ 伺服器繁忙，暫停 5 秒...`, 'error');
+                             await delay(5000);
+                             continue;
+                        }
+
+                        throw new Error(errData.error?.message || `API Error ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    if (!data.choices || data.choices.length === 0) throw new Error("No choices returned from OpenRouter");
+
+                    let text = data.choices[0].message.content || "";
+
+                    // Some models wrap JSON in ```json ... ``` fences. Strip them defensively.
+                    if (jsonMode) {
+                        const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+                        if (fenceMatch) text = fenceMatch[1];
+                    }
+
+                    return jsonMode ? JSON.parse(text) : text;
+
+                } catch (error) {
+                    // Don't retry non-transient errors instantly unless handled above
+                    if (error.message.includes("Rate Limit") || error.message.includes("繁忙")) {
+                        // Already handled continue
+                    } else {
+                        attempts++;
+                        log(`API Call Failed (Attempt ${attempts}/${maxAttempts}): ${error.message}`, 'error');
+                        if (attempts >= maxAttempts) throw error;
+                        await delay(2000 * attempts);
+                    }
+                }
+            }
+        }
+
+        // --- Feature: Auto Generate TA ---
+        async function autoGenerateTA() {
+            const product = document.getElementById('productDesc').value.trim();
+            const btn = document.getElementById('btnAutoTA');
+            const input = document.getElementById('targetAudience');
+
+            if (!state.apiKey) { openSettings(); return; }
+            if (!product) { alert("請先輸入產品/服務描述"); return; }
+
+            // UI Loading
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 分析中...';
+            btn.disabled = true;
+
+            try {
+                const systemPrompt = `You are a Marketing Strategist. Analyze the product description and define the single most high-potential Target Audience (TA). 
+                Format: "Age range, Descriptor, Lifestyle/Key Characteristic". 
+                Keep it under 15 words. Chinese Traditional.`;
+                
+                const result = await callGemini(`Product: ${product}`, systemPrompt, false); // Expect string
+                
+                // Typing effect
+                input.value = "";
+                let i = 0;
+                const typeInterval = setInterval(() => {
+                    input.value += result.charAt(i);
+                    i++;
+                    if (i >= result.length) clearInterval(typeInterval);
+                }, 30);
+
+            } catch (e) {
+                alert("生成失敗: " + e.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // --- Logger ---
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+            let colorClass = 'text-slate-300';
+            let icon = 'fa-info-circle';
+            
+            if (type === 'success') { colorClass = 'text-green-400'; icon = 'fa-check-circle'; }
+            if (type === 'error') { colorClass = 'text-red-400'; icon = 'fa-times-circle'; }
+            if (type === 'process') { colorClass = 'text-blue-400'; icon = 'fa-cog fa-spin'; }
+            if (type === 'persona') { colorClass = 'text-purple-300'; icon = 'fa-user'; }
+            if (type === 'verify') { colorClass = 'text-yellow-400'; icon = 'fa-magnifying-glass'; }
+
+            const logHtml = `
+                <div class="flex items-start gap-2 animate-pulse-once">
+                    <span class="text-slate-600 font-mono text-[10px] mt-0.5">[${timestamp}]</span>
+                    <span class="${colorClass} flex-1"><i class="fa-solid ${icon} mr-1.5 w-4 text-center"></i>${message}</span>
+                </div>`;
+            
+            const container = document.getElementById('logContainer');
+            container.innerHTML += logHtml;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // --- Core Simulation Engine ---
+
+        async function startSimulation() {
+            // 1. Get Inputs & Save State
+            saveCurrentAdContent();
+            state.product = document.getElementById('productDesc').value.trim();
+            state.ta = document.getElementById('targetAudience').value.trim();
+            state.count = parseInt(document.getElementById('personaCount').value);
+            state.mode = document.getElementById('evalMode').value;
+
+            // Filter valid ads
+            const validAds = state.ads.filter(a => a.content.trim().length > 0);
+
+            // 2. Validation
+            if (!state.apiKey) { openSettings(); return; }
+            if (!state.product) { alert("請填寫產品描述"); return; }
+            if (validAds.length === 0) { alert("請至少填寫一則廣告文案"); return; }
+            
+            if (state.isSimulating) return;
+
+            // 3. UI Transition
+            state.isSimulating = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('startBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 處理中...';
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('resultsView').classList.add('hidden');
+            document.getElementById('consoleView').classList.remove('hidden');
+            document.getElementById('logContainer').innerHTML = '';
+            
+            state.results = {}; // Reset Results
+
+            try {
+                updateProgress(2, "Initializing System...");
+
+                // --- Step A: Verification (Shared) ---
+                log("啟動 AI 真實性預審模組...", "process");
+                state.verificationReport = await stepVerifyAd(validAds[0].content);
+                await delay(1500); // Cool down
+                
+                log(`真實性檢測完成: 風險評分 ${state.verificationReport.risk_score}/10`, 'verify');
+                updateProgress(10, "Verification Complete");
+
+                // --- Step B: Generate Personas (Shared) ---
+                log(`正在建構 ${state.count} 位虛擬受眾 (${state.mode} 模式)...`, 'process');
+                const personas = await stepGeneratePersonas();
+                await delay(1500); // Cool down
+
+                log(`成功生成 ${personas.length} 位角色資料庫。`, 'success');
+                updateProgress(20, "Personas Ready");
+
+                // --- Step C: Evaluate Each Ad SEQUENTIALLY to avoid Rate Limits ---
+                const totalSteps = validAds.length * personas.length;
+                let stepsCompleted = 0;
+
+                for (let idx = 0; idx < validAds.length; idx++) {
+                    const currentAd = validAds[idx];
+                    log(`>>> 開始評測 廣告 ${idx + 1} (序列模式啟動)...`, 'process');
+                    
+                    const adEvaluations = [];
+                    
+                    // FIXED: Changed from Promise.all to sequential for loop
+                    // This is slower but prevents "429 Too Many Requests"
+                    for (const persona of personas) {
+                        
+                        // Process single persona
+                        try {
+                            const res = await stepEvaluatePersona(persona, currentAd.content, state.verificationReport);
+                            adEvaluations.push(res);
+                            log(`[廣告 ${idx+1} | ${persona.name}] 評測完畢: ${res.result.decision}`, 'persona');
+                            
+                            stepsCompleted++;
+                            const percent = 20 + Math.floor((stepsCompleted / totalSteps) * 60);
+                            updateProgress(percent, `Evaluating Ad ${idx+1} (${stepsCompleted}/${totalSteps})`);
+
+                        } catch (err) {
+                            log(`[${persona.name}] 評測失敗: ${err.message}`, 'error');
+                        }
+
+                        // IMPORTANT: Rate Limit Cool down buffer
+                        // Wait 1.5 seconds between EVERY call
+                        await delay(1500); 
+                    }
+
+                    // --- Step D: Summary for this Ad ---
+                    log(`正在生成 廣告 ${idx+1} 洞察報告...`, 'process');
+                    const summary = await stepGenerateSummary(adEvaluations);
+                    await delay(1500); // Cool down
+
+                    state.results[currentAd.id] = {
+                        evaluations: adEvaluations,
+                        summary: summary
+                    };
+                }
+
+                log("所有評測任務完成。", 'success');
+                updateProgress(100, "Done");
+
+                // Render Results
+                setTimeout(() => {
+                    renderResultTabs(validAds);
+                    state.activeResultTab = validAds[0].id;
+                    switchResultTab(validAds[0].id); // Render first ad
+                    
+                    document.getElementById('consoleView').classList.add('hidden');
+                    document.getElementById('resultsView').classList.remove('hidden');
+                    
+                    state.isSimulating = false;
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('startBtn').innerHTML = '<i class="fa-solid fa-play"></i> 開始多維度評測';
+                }, 800);
+
+            } catch (e) {
+                console.error(e);
+                log(`Critical System Error: ${e.message}`, 'error');
+                alert(`模擬失敗: ${e.message}`);
+                state.isSimulating = false;
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('startBtn').innerHTML = '<i class="fa-solid fa-play"></i> 重試';
+            }
+        }
+
+        // --- Step Functions ---
+
+        async function stepVerifyAd(adContent) {
+            const systemPrompt = `You are a Fact-Checking AI. 
+            Analyze the provided Ad Copy and Product Description. 
+            Identify key claims and evaluate plausibility.
+            Output JSON: { "risk_score": 1-10 (10=Scam), "findings": "string summary", "is_safe": boolean }`;
+
+            const userPrompt = `Product: ${state.product}\nAd Sample: ${adContent}`;
+            return await callGemini(userPrompt, systemPrompt);
+        }
+
+        async function stepGeneratePersonas() {
+            const count = state.count;
+            const mode = state.mode;
+            
+            let distribution = "";
+            if (mode === 'balanced') distribution = "70% Target Audience, 30% Skeptical Bystanders";
+            if (mode === 'strict') distribution = "100% Highly Critical Target Audience";
+            if (mode === 'fan') distribution = "100% Enthusiastic Early Adopters";
+
+            const systemPrompt = `You are a Persona Generator. Create ${count} detailed personas.
+            Context: Product is "${state.product}". Target Audience is "${state.ta}".
+            Distribution: ${distribution}.
+            Output JSON Array: [{ "name": "string", "age": int, "occupation": "string", "personality": "string", "pain_points": "string" }]`;
+            
+            const data = await callGemini("Generate Personas", systemPrompt);
+            return Array.isArray(data) ? data : data.personas || [];
+        }
+
+        async function stepEvaluatePersona(persona, adContent, verification) {
+            const systemPrompt = `You are ${persona.name}, a ${persona.age}-year-old ${persona.occupation}.
+            Personality: ${persona.personality}. Pain Points: ${persona.pain_points}.
+            
+            Task: Read the Ad.
+            Verification Warning: ${verification.risk_score > 5 ? verification.findings : "None"}.
+
+            Evaluate ad on 1-10 scale (10 best):
+            1. Persuasiveness
+            2. Trust
+            3. Emotional Resonance
+            4. Social Proof
+            5. Urgency
+
+            Decide: "BUY" or "REJECT".
+            Provide reasoning and suggestion.
+
+            Output JSON: {
+                "scores": { "persuasiveness": int, "trust": int, "emotional_resonance": int, "social_proof": int, "urgency": int },
+                "decision": "BUY" or "REJECT",
+                "reasoning": "string",
+                "suggestion": "string"
+            }`;
+
+            const userPrompt = `Ad Copy:\n${adContent}`;
+            
+            try {
+                const result = await callGemini(userPrompt, systemPrompt);
+                return { persona, result };
+            } catch (e) {
+                return { 
+                    persona, 
+                    result: { 
+                        scores: { persuasiveness:0, trust:0, emotional_resonance:0, social_proof:0, urgency:0 }, 
+                        decision: "REJECT", 
+                        reasoning: "System Error", 
+                        suggestion: "N/A" 
+                    } 
+                };
+            }
+        }
+
+        async function stepGenerateSummary(evaluations) {
+            const buyers = evaluations.filter(e => e.result.decision === "BUY");
+            const rejectors = evaluations.filter(e => e.result.decision === "REJECT");
+            
+            const prompt = `Analyze these ${evaluations.length} evaluation results.
+            Buyers: ${buyers.length}. Rejectors: ${rejectors.length}.
+            Buyer Reasons: ${buyers.map(b => b.result.reasoning).join(' | ').substring(0, 800)}...
+            
+            Write a concise executive summary in Markdown. 
+            Include: Key Drivers, Key Barriers, and Improvement Advice.`;
+            
+            return await callGemini(prompt, "You are a Marketing Analyst. Output in Markdown.", false);
+        }
+
+
+        // --- Rendering Results Logic ---
+
+        function renderResultTabs(validAds) {
+            const container = document.getElementById('resultTabsContainer');
+            container.innerHTML = '';
+            
+            validAds.forEach((ad, index) => {
+                const btn = document.createElement('button');
+                // Calculate quick score for label
+                const res = state.results[ad.id];
+                const score = res ? calculateQualityScore(res.evaluations) : '?';
+                
+                btn.className = "px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors whitespace-nowrap result-tab-btn";
+                btn.dataset.id = ad.id;
+                btn.innerHTML = `廣告 ${index+1} <span class="ml-1 text-xs bg-slate-800 px-1.5 rounded text-blue-300">QS: ${score}</span>`;
+                
+                btn.onclick = () => switchResultTab(ad.id);
+                container.appendChild(btn);
+            });
+        }
+
+        function switchResultTab(adId) {
+            state.activeResultTab = adId;
+            
+            // Update Tab Styles
+            document.querySelectorAll('.result-tab-btn').forEach(btn => {
+                if (parseInt(btn.dataset.id) === adId) {
+                    btn.className = "px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 border-blue-500 text-blue-400 bg-slate-800/50 transition-colors whitespace-nowrap result-tab-btn";
+                } else {
+                    btn.className = "px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 border-transparent text-slate-500 hover:text-slate-300 transition-colors whitespace-nowrap result-tab-btn";
+                }
+            });
+
+            // Render Content
+            const data = state.results[adId];
+            if (data) {
+                renderDashboard(data.evaluations, data.summary);
+            }
+        }
+
+        function calculateQualityScore(data) {
+            const total = data.length;
+            if (total === 0) return 0;
+            const metrics = ['persuasiveness', 'trust', 'emotional_resonance', 'social_proof', 'urgency'];
+            let sum = 0;
+            data.forEach(d => {
+                metrics.forEach(m => sum += (d.result.scores[m] || 0));
+            });
+            return (sum / (total * 5)).toFixed(1);
+        }
+
+        function renderDashboard(data, summaryText) {
+            // 1. Stats Calculation
+            const total = data.length;
+            const buyers = data.filter(d => d.result.decision === "BUY").length;
+            const buyRate = Math.round((buyers / total) * 100);
+            
+            const metrics = ['persuasiveness', 'trust', 'emotional_resonance', 'social_proof', 'urgency'];
+            const avgs = {};
+            metrics.forEach(m => {
+                const sum = data.reduce((acc, curr) => acc + (curr.result.scores[m] || 0), 0);
+                avgs[m] = (sum / total).toFixed(1);
+            });
+            const qualityScore = calculateQualityScore(data);
+
+            // 2. UI Update: Verification (Global)
+            const vPanel = document.getElementById('verificationPanel');
+            if (state.verificationReport && state.verificationReport.risk_score >= 4) {
+                vPanel.classList.remove('hidden');
+                document.getElementById('verificationText').innerText = 
+                    `警告：AI 偵測到潛在風險 (Score: ${state.verificationReport.risk_score}/10)。${state.verificationReport.findings}`;
+            } else {
+                vPanel.classList.add('hidden');
+            }
+
+            // 3. UI Update: KPIs
+            document.getElementById('resBuyRate').innerText = `${buyRate}%`;
+            document.getElementById('resBuyRate').className = `text-3xl font-bold mt-2 ${buyRate >= 60 ? 'text-green-400' : (buyRate >= 40 ? 'text-yellow-400' : 'text-red-400')}`;
+            document.getElementById('resQualityScore').innerText = qualityScore;
+            
+            const sortedMetrics = Object.entries(avgs).sort((a,b) => b[1] - a[1]);
+            const topM = sortedMetrics[0];
+            const lowM = sortedMetrics[4];
+            
+            document.getElementById('resTopMetric').innerText = `${translateMetric(topM[0])} (${topM[1]})`;
+            document.getElementById('resTopBar').style.width = `${topM[1] * 10}%`;
+            
+            document.getElementById('resLowMetric').innerText = `${translateMetric(lowM[0])} (${lowM[1]})`;
+            document.getElementById('resLowBar').style.width = `${lowM[1] * 10}%`;
+
+            // 4. UI Update: Chart
+            renderRadarChart(avgs);
+
+            // 5. UI Update: Summary
+            document.getElementById('aiSummary').innerHTML = marked.parse(summaryText);
+
+            // 6. UI Update: Persona Cards
+            const container = document.getElementById('personasContainer');
+            container.innerHTML = '';
+            document.getElementById('personaCountLabel').innerText = total;
+
+            data.forEach(item => {
+                const isBuy = item.result.decision === "BUY";
+                const scores = item.result.scores;
+                
+                const scoreBars = metrics.map(m => {
+                    const s = scores[m];
+                    const color = s >= 7 ? 'bg-green-500' : (s >= 4 ? 'bg-yellow-500' : 'bg-red-500');
+                    return `<div class="flex flex-col gap-1" title="${translateMetric(m)}: ${s}">
+                        <div class="w-1.5 h-8 bg-slate-700 rounded-sm flex items-end overflow-hidden">
+                            <div class="w-full ${color}" style="height: ${s*10}%"></div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-lg border bg-slate-800/50 hover:bg-slate-800 transition-colors ${isBuy ? 'border-green-500/30' : 'border-red-500/30'}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-user ${isBuy ? 'text-green-400' : 'text-red-400'}"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-200 text-sm">${item.persona.name}</div>
+                                <div class="text-xs text-slate-500">${item.persona.age}歲 | ${item.persona.occupation}</div>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 rounded text-xs font-bold border ${isBuy ? 'bg-green-500/10 text-green-400 border-green-500/50' : 'bg-red-500/10 text-red-400 border-red-500/50'}">${item.result.decision}</span>
+                    </div>
+                    
+                    <div class="flex gap-1 mb-3 justify-center opacity-70">
+                        ${scoreBars}
+                    </div>
+
+                    <p class="text-xs text-slate-300 italic mb-3 bg-slate-900/50 p-2 rounded">"${item.result.reasoning}"</p>
+                    
+                    <div class="text-[10px] text-slate-400 flex items-start gap-1">
+                        <i class="fa-solid fa-lightbulb text-yellow-500 mt-0.5"></i>
+                        <span>建議: ${item.result.suggestion}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderRadarChart(avgs) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (radarChartInstance) radarChartInstance.destroy();
+
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['說服力', '信任度', '情感共鳴', '社會認同', '急迫感'],
+                    datasets: [{
+                        label: '平均得分',
+                        data: [avgs.persuasiveness, avgs.trust, avgs.emotional_resonance, avgs.social_proof, avgs.urgency],
+                        backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                        borderColor: '#60a5fa',
+                        pointBackgroundColor: '#60a5fa',
+                        pointBorderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.05)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            pointLabels: { color: '#94a3b8', font: { size: 11, family: 'Inter' } },
+                            ticks: { display: false, backdropColor: 'transparent', stepSize: 2 },
+                            min: 0,
+                            max: 10
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // --- Utils ---
+        function updateProgress(percent, text) {
+            const bar = document.getElementById('progressBar');
+            bar.style.width = `${percent}%`;
+            bar.classList.remove('from-green-500', 'to-emerald-500'); 
+            if (percent === 100) {
+                bar.classList.add('from-green-500', 'to-emerald-500'); 
+            }
+            document.getElementById('progressPercent').innerText = `${percent}%`;
+            if (text) document.getElementById('progressText').innerText = text;
+        }
+
+        function translateMetric(key) {
+            const map = {
+                'persuasiveness': '說服力',
+                'trust': '信任度',
+                'emotional_resonance': '情感',
+                'social_proof': '社會認同',
+                'urgency': '急迫感'
+            };
+            return map[key] || key;
+        }
+
+        function resetSimulation() {
+            document.getElementById('resultsView').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function downloadReport() {
+            const date = new Date().toISOString().slice(0,10);
+            const activeAdId = state.activeResultTab;
+            const data = state.results[activeAdId];
+            
+            if(!data) return;
+
+            const content = `GAP_MKI Report (Ad ${activeAdId}) - ${date}\n\nProduct: ${state.product}\n\nSummary:\n${data.summary}\n\nRaw Data:\n${JSON.stringify(data.evaluations, null, 2)}`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `GAP_MKI_Report_Ad${activeAdId}_${date}.txt`;
+            a.click();
+        }
+
+        // --- Settings Modal Logic ---
+        function openSettings() { 
+            document.getElementById('settingsModal').classList.remove('hidden'); 
+            document.getElementById('settingsModal').classList.add('flex'); 
+        }
+        function closeSettings() { 
+            document.getElementById('settingsModal').classList.add('hidden'); 
+            document.getElementById('settingsModal').classList.remove('flex'); 
+        }
+        function saveSettings() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) {
+                state.apiKey = key;
+                localStorage.setItem('gap_mki_api_key', key);
+                document.getElementById('apiKeyStatus').classList.remove('hidden');
+                closeSettings();
+                alert("API Key 已儲存");
+            } else {
+                alert("請輸入有效的 API Key");
+            }
+        }
+        function togglePasswordVisibility() {
+            const input = document.getElementById('apiKeyInput');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // --- Demo Data ---
+        document.getElementById('demoDataBtn').addEventListener('click', () => {
+            document.getElementById('productDesc').value = "QuantumSleep 枕頭：採用航太級記憶棉，內建微型溫控晶片，能根據體溫自動調節表面溫度，確保整晚維持在最佳睡眠溫度 21度C。";
+            
+            // Auto Trigger TA Generation (Mock if no API, but here we just wait for user)
+            document.getElementById('targetAudience').value = "30-50歲，淺眠困擾的高壓上班族";
+
+            state.ads[0].content = "【終於，不再熱醒！】\n你是否每晚翻來覆去，找不到枕頭「涼的那一面」？\nQuantumSleep 智能溫控枕，不是涼感，是「恆溫」。\n✅ 獨家 Aero-Gel 散熱科技\n✅ 100晚試睡體驗\n👉 75折早鳥：link.com";
+            
+            // Add second Ad
+            if(state.ads.length < 2) addNewAd();
+            state.ads[1].content = "【科技改善睡眠】\n根據史丹佛睡眠研究，頭部溫度降低 1°C 可提升深層睡眠 20%。\nQuantumSleep 結合 AI 溫控晶片與航太記憶棉，為您打造黃金睡眠環境。\n專業醫師推薦。";
+            
+            // Render
+            switchAdTab(1);
+        });
+
+    </script>
+</body>
+</html>
