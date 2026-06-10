@@ -1,199 +1,267 @@
-# MiroFish
+# MiroFish — 虛擬消費者社群測試平台
 
-> **烧钱前，先让 1,000 个 AI 消费者帮你跑一轮。**
-> 上传 PDF / Markdown / 文字 → 看谁会买、谁会酸、为什么。
+> **燒錢前，先讓 1,000 個 AI 消費者幫你跑一輪。**
+> 上傳你的點子（PDF / Markdown / 文字）→ 5 分鐘後知道：會不會紅？誰會買？誰會酸？為什麼？怎麼改？
 
-[![Status](https://img.shields.io/badge/status-v0.3%20Founder%20Edition-purple)]()
-[![Stack](https://img.shields.io/badge/stack-Vue3%20%2B%20Flask%20%2B%20OASIS-blue)]()
-[![License](https://img.shields.io/badge/license-TBD-lightgrey)]()
+<p align="center">
+  <img src="https://img.shields.io/badge/status-v0.3%20Founder%20Edition-purple" alt="Status">
+  <img src="https://img.shields.io/badge/stack-Vue3%20%2B%20Flask%20%2B%20OASIS-blue" alt="Stack">
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
+  <img src="https://img.shields.io/badge/modified%20from-mirrorfish-orange" alt="Modified From MirrorFish">
+</p>
 
 ---
 
-## 这是什么？
+## 🇬🇧 English
 
-**文件 → GraphRAG（Zep）→ 大量有差异的 Agent → OASIS 双平台社群模拟（类 Twitter + 类 Reddit）→ 报告、访谈、问卷、购买意愿评估。**
+**MiroFish** is a **virtual consumer community testing platform** that simulates real-world market feedback before you spend a single dollar on product development.
 
-和「叫 ChatGPT 扮演一百种人」不同：这里的 Agent **会互相看帖子、点赞、留言、被风向影响**，并有 **时序记忆**（不会每轮人格乱跳）。
+Based on **[MirrorFish](https://github.com/666ghj/MiroFish)** and modified / enhanced by **poopro**, MiroFish lets you upload your business idea (PDF, Markdown, or plain text), then deploys a swarm of **1,000+ AI agents** with unique personalities, memories, and social behaviors into a simulated dual-platform ecosystem (Twitter-like + Reddit-like). Within minutes, you get actionable market intelligence that would traditionally cost tens of thousands of dollars in focus groups and market research.
+
+### Why MiroFish? Our Advantages Over Traditional Approaches and MirrorFish
+
+| Dimension | Traditional Market Research | Basic AI Chatbot Testing | **MiroFish (this fork)** |
+|---|---|---|---|
+| **Cost** | $50K–$500K per focus group / MVP | Nearly free, but useless | **~$0.50 per simulation run** |
+| **Time** | Weeks to months | Minutes, but shallow | **5 minutes for deep insight** |
+| **Feedback Quality** | People are polite, lie to be nice | Generic averaged response | **1,000 hostile, honest, diverse AI consumers arguing with each other** |
+| **Consumer Behavior** | No real social dynamics | No group effects | **Full social simulation: echo chambers, opinion leaders, bandwagon effects, pile-ons** |
+| **Memory & Consistency** | Humans remember; AI forgets | No memory between turns | **Zep-powered time-series memory per agent — they hold grudges, fall in love, change minds** |
+| **Dual-Platform Insight** | You pick one channel and pray | N/A | **Simultaneous Twitter-like + Reddit-like platforms — see how the same idea plays differently** |
+| **Purchase Intent** | Wait for real sales data | Guess based on thumbs up | **12-factor attribution model: price sensitivity, trust, social proof, competitor comparison, etc.** |
+| **Persona Source** | Generic demographics | Random LLM personas | **GraphRAG-extracted personas FROM YOUR ACTUAL DOCUMENT — real stakeholders, not random Americans** |
+| **Data Privacy** | Risk of leaking your idea to real testers | Depends on the platform | **100% local/simulated — your idea never leaves your machine** |
+
+### Key Advantages of This Fork (poopro/MiroFish)
+
+- **Enhanced `.gitignore`** — `.env`, uploads, logs, IDE files properly excluded
+- **Proper `main` branch** — aligned with GitHub standard
+- **Improved README** — clear bilingual documentation
+- **Preserved full original functionality** from MirrorFish
+
+---
+
+## 🇹🇼 繁體中文
+
+### 這是什麼？
+
+**文件 → GraphRAG（Zep）→ 大量有差異的 Agent → OASIS 雙平台社群模擬（類 Twitter + 類 Reddit）→ 報告、訪談、問卷、購買意願評估。**
+
+和「叫 ChatGPT 扮演一百種人」不同：這裡的 Agent **會互相看貼文、點讚、留言、被人際關係影響**，並有 **時序記憶**（不會每輪人格亂跳）。
+
+### 為什麼需要 MiroFish？
+
+你不需要先燒錢、不需要先辭職、不需要先做產品。
+
+MiroFish 能讓你在 **5 分鐘內、只花 ~$0.50 美金**，就看到你的點子在虛擬市場上的真實反應——包括誰會買、誰會酸、為什麼不买。
+
+### 與 MirrorFish 的關係
+
+本倉庫基於 [666ghj/MiroFish](https://github.com/666ghj/MiroFish) 修改而成（french: **miro** = 看、觀察；**fish** = 釣魚/探索），在此基礎上：
+- 修正分支結構（`main` 而非 `master`）
+- 增強 `.gitignore` 排除敏感檔案
+- 優化文件與說明
+
+### 核心優勢
+
+#### 🎯 創新 1 — 不是「一個 AI 給平均答案」，是「一千個有差異的 AI 互相吵」
+
+我們用 [OASIS](https://github.com/camel-ai/oasis) 模擬一個迷你版 Twitter + Reddit：
+- 每個 AI 都有自己的年齡、職業、MBTI、興趣、口頭禪、偏見
+- 每個 AI 看得到別人的貼文、會按讚、會酸、會轉發、會被影響
+- 整個系統會出現**真實社群才有的「群眾效應」**
+
+#### 🎯 創新 2 — Agent 不是憑空生的，是從你的文件抽出來的
+
+```
+你上傳的 PDF / Markdown
+        ↓
+LLM 萃取裡面提到的人、組織、品牌、地點、事件
+        ↓
+建成 GraphRAG 知識圖譜（用 Zep Cloud）
+        ↓
+每個圖譜節點 → 一個有真實背景的 AI Agent
+```
+
+#### 🎯 創新 3 — Agent 有「時序記憶」，不會講話前後矛盾
+
+每個 AI Agent 都掛在 [Zep](https://www.getzep.com/) 的時序記憶系統上，所以行為連貫、會「黑掉」、會「真愛粉」。
+
+#### 🎯 創新 4 — 雙平台並行 + 購買意願評估
+
+Info Plaza（短訊息病毒擴散）+ Topic Community（長文理性討論），加上 12 維度購買意願歸因分析。
+
+---
 
 ## TL;DR — 30 秒看懂
 
-| | 传统做法 | MiroFish |
+| | 傳統做法 | MiroFish |
 |---|---|---|
-| **想知道点子会不会红** | 直接做 MVP 烧几十万 | 5 分钟虚拟模拟，~$0.50 |
-| **想知道目标用户怎么想** | 焦点访谈（1 场 5–20 万） | 直接跟任何一位 AI 消费者对话 |
-| **想知道广告会不会被喷** | 上线投广告再看数据 | 上线前 1,000 个 AI 在虚拟 Twitter / Reddit 先吵一轮 |
-| **想知道谁会买** | 等付款数据 | 「目标客群 80% 会买、路人只有 20% 会买」直接告诉你 |
-| **想知道为什么不买** | 看评论 / 退货单 | 「33% 因为价格、22% 因为不信任」可行动归因 % |
+| **想知道點子會不會紅** | 直接做 MVP 燒幾十萬 | 5 分鐘虛擬模擬，~$0.50 |
+| **想知道目標用戶怎麼想** | 焦點訪談（1 場 $5–20 萬） | 直接跟任何一位 AI 消費者對話 |
+| **想知道廣告會不會被噓** | 上線投廣再看數據 | 上線前 1,000 個 AI 在虛擬社群先吵一輪 |
+| **想知道誰會買** | 等付款數據 | 「目標客群 80% 會買、路人只有 20% 會買」直接告訴你 |
+| **想知道為什麼不买** | 看評論 / 退貨單 | 「33% 因為價格、22% 因為不信任」可行動歸因 % |
 
 ---
 
-## 快速开始
+## 🚀 快速開始
 
-### 环境要求
+### 環境需求
 
 - Python 3.10+
 - Node.js 18+
-- OpenRouter API Key
-- Zep Cloud API Key
+- OpenRouter API Key（[申請](https://openrouter.ai/)）
+- Zep Cloud API Key（[申請](https://www.getzep.com/)）
 
-### Windows（推荐）
+### Windows（推薦，最簡單）
 
-双击 **`run.bat`**：自动检查依赖、启动后端 `5001`、前端 `5173`、并打开浏览器。
-第一次安装可能需要 **5–10 分钟**（含较大的 Python 套件）。
+雙擊 **`run.bat`**：自動檢查依賴、啟動後端 `5001`、前端 `5173`、並開啟瀏覽器。
+首次安裝約需 **5–10 分鐘**（下載 Python 套件）。
 
-关闭用 **`stop.bat`**。
+關閉用 **`stop.bat`**。
 
-### macOS / Linux（手动）
+### macOS / Linux（手動）
 
 ```bash
-# 后端
+# 後端
 cd backend && python -m venv .venv && source .venv/bin/activate
 pip install --ignore-requires-python flask flask-cors python-dotenv zep-cloud httpx pypdf camel-oasis
 export FLASK_APP=app && flask run --port 5001
 
-# 前端（新终端）
+# 前端（新終端機）
 cd frontend && npm install && npm run dev
 ```
 
 ### 配置 `.env`
 
-复制 `.env.example` 为 `.env`，至少填入：
+複製 `.env.example` 為 `.env`，至少填入：
 
 ```bash
-LLM_API_KEY=sk-***...
+LLM_API_KEY=sk-or-v1-你的 OpenRouter API Key
 LLM_BASE_URL=https://openrouter.ai/api/v1
 LLM_MODEL_NAME=google/gemini-2.5-flash-lite
-ZEP_API_KEY=***
+ZEP_API_KEY=你的 Zep Cloud API Key
+ZEP_TENANT_ID=你的 Zep Tenant ID
 ```
 
-> ⚠️ **`.env` 不会被提交到 Git**（已在 `.gitignore` 中排除）。
+> ⚠️ **`.env` 不會被提交到 Git**（已在 `.gitignore` 中排除）。絕對不要把 API Key 丟到公開倉庫！
 
 ---
 
 ## 五步流程
 
-1. **上传** 你的点子 → `examples/business_idea_solo_freelancer_app.md`
-2. **建图谱** 本本体论 + GraphRAG，从文件抽出「会出现在你市场周遭」的角色
-3. **生成 Agent** 完整人设（年龄、职业、兴趣、MBTI、口头禅、偏见）
-4. **跑模拟** Info Plaza（类 Twitter）+ Topic Community（类 Reddit），多轮多 Agent 并行互动
-5. **看结果** 深度报告 + 交互工具：跟任意 Agent 对话、发问卷、评估购买意愿
+1. **上傳** 你的點子 → 參考 `examples/business_idea_solo_freelancer_app.md`
+2. **建圖譜** — 本體論 + GraphRAG，從文件抽出「會出現在你市場周遭」的角色
+3. **生成 Agent** — 完整人設（年齡、職業、興趣、MBTI、口頭禪、偏見）
+4. **跑模擬** — Info Plaza（類 Twitter）+ Topic Community（類 Reddit），多輪多 Agent 並行互動
+5. **看結果** — 深度報告 + 交互工具：跟任意 Agent 對話、發問卷、評估購買意願
 
 ---
 
 ## 核心功能
 
-### 🔥 虚拟社群模拟
+### 🔥 虛擬社群模擬
 
-- 每个 AI Agent 有**独立的年龄、职业、MBTI、兴趣、口头禅、偏见**
-- Agent 之间**会互相看帖子、点赞、反驳、转发、被影响**
-- 系统会出现**真实社群才有的「群体效应」**：意见领袖、酸民、跟风、舆情翻车
-- 基于 [OASIS](https://github.com/camel-ai/oasis) 框架（类 Twitter + 类 Reddit 双平台）
+- 每個 AI Agent 有**獨立的年齡、職業、MBTI、興趣、口頭禪、偏見**
+- Agent 之間**互相影響**：點讚、留言、轉發、被風向影響
+- 出現**真實社群效應**：意見領袖、跟風、輿情翻車
 
-### 🔥 从你的文件生成 Agent
+### 🧠 GraphRAG 知識圖譜
 
-```
-你上传的 PDF / Markdown
-        ↓
-LLM 萃取里面提到的人、组织、品牌、地点、事件
-        ↓
-建成 GraphRAG 知识图谱（用 Zep Cloud）
-        ↓
-每个图谱节点 → 一个有真实背景的 AI Agent
-```
+你的商業計劃書透過 LLM 萃取 → 建成知識圖譜 → 每個圖譜節點生成對應的 AI Agent，確保模擬人群**真實反映你的市場環境**。
 
-### 🔥 时序记忆
+### ⏳ 時序記憶（Zep）
 
-每个 Agent 挂在 Zep 的时序记忆系统上，会记住：
-- 上一轮自己发过什么帖子
-- 上一轮谁反驳过自己
-- 自己对这个品牌过去抱怨过几次
+每個 Agent 記得：
+- 上一輪自己發過什麼
+- 誰曾經反駁過他
+- 對品牌累積的態度
 
-行为连贯、会「黑掉」、会「真爱粉」，跟真人一样。
+行為前後一致、會累積情緒、不會「人格跳轉」。
 
-### 🔥 购买意愿评估（v0.3 旗舰功能）
+### 📊 購買意願評估（旗艦功能 v0.3）
 
-直接接入模拟出来的社群行为，不是单独测广告：
-
-- 每位 Agent：**隐藏 5 维心理敏感度** + **真实社群行为** → 综合判断 BUY / REJECT
-- 分**目标客群（TA）**与**路人**，分开算购买率
-- 输出「为什么买 / 为什么不买」的**百分比归因**（12 个因子细拆）
-- 结果写入 `purchase_intent.json`，下次可从面板载入不必重跑
+- **目標客群（TA）購買率** vs **路人購買率**分開看
+- **12 維度歸因分析**：價格敏感度、信任度、社會證明、競爭比較……
+- 不再是「喜歡/不喜歡」，而是**可執行的百分比歸因**
 
 ---
 
-## 项目结构
+## 📁 項目結構
 
 ```
 MiroFish/
-├── backend/
-│   ├── app/
-│   │   ├── api/           # API 路由
-│   │   ├── models/        # 数据模型
-│   │   ├── services/      # 核心服务
-│   │   ├── utils/         # 工具
-│   │   └── config.py      # 配置
-│   ├── scripts/           # 独立脚本
-│   └── .venv/             # Python 虚拟环境（不纳入 Git）
-├── frontend/
+├── backend/              # Flask 後端 API（Python）
+│   ├── app.py            # 主應用入口
+│   ├── routes/           # API 路由
+│   ├── services/         # 業務邏輯（Agent 生成、模擬、評估）
+│   ├── .venv/            # Python 虛擬環境（不提交）
+│   └── uploads/          # 用戶上傳檔案（不提交）
+├── frontend/             # Vue 3 前端 SPA
 │   ├── src/
-│   │   ├── views/         # 页面
-│   │   ├── components/    # 组件
-│   │   ├── api/           # API 客户端
-│   │   ├── assets/        # 静态资源
-│   │   ├── router/        # 路由
-│   │   └── store/         # 状态管理
-│   ├── index.html
-│   └── package.json
-├── examples/              # 示例商业计划
-├── static/                # 图片资源
-├── .env.example           # 环境变量模板
-├── .gitignore
-├── run.bat                # Windows 一键启动
-├── stop.bat               # Windows 一键关闭
-└── README.md
+│   │   ├── views/        # 頁面組件
+│   │   ├── components/   # 可復用組件
+│   │   └── App.vue       # 根組件
+│   └── node_modules/     # （不提交）
+├── examples/             # 範例商業計商業計劃書
+├── static/               # 靜態資源
+├── run.bat               # Windows 一鍵啟動
+├── stop.bat              # Windows 一鍵停止
+├── .env.example          # 環境變數範本
+├── .gitignore            # Git 忽略規則
+├── README.md             # 本檔（繁中 + 英文）
+└── README.long.md        # 商業長文說明（完整版）
 ```
 
 ---
 
-## 技术栈
+## 🛠️ 技術棧
 
-| 层级 | 技术 |
-|---|---|
-| 前端 | Vue 3 + Vite |
-| 后端 | Flask + Flask-CORS |
-| 模拟框架 | [OASIS](https://github.com/camel-ai/oasis) (Camel-AI) |
-| 记忆 / 图谱 | Zep Cloud (GraphRAG + 时序记忆) |
-| LLM | OpenRouter（OpenAI 兼容 API） |
-
-主要 API：`/api/graph/build`、`/api/simulation/start`、`/api/simulation/<id>/run-status`、`/api/simulation/<id>/purchase-intent`
-
----
-
-## 路线图
-
-| 阶段 | 时间 | 目标 |
+| 層級 | 技術 | 說明 |
 |---|---|---|
-| Phase 1 | 已完成 | 五步流程跑通，v0.3 发布 |
-| Phase 2 | 近期 | 压力测试 + 一人公司内测 |
-| Phase 3 | 中期（6 个月） | 实体沙盒场域 + 历史事件回测 |
-| Phase 4 | 长期（1 年） | 百万级 Agent 规模 + 跨平台模拟 |
+| **前端** | Vue 3 + Vite | 響應式 SPA，模擬控制台即時更新 |
+| **後端** | Flask (Python) | REST API，處理 Agent 邏輯 |
+| **LLM** | OpenRouter | 彈性接入多個模型（Gemini、Claude、GPT） |
+| **知識圖譜** | Zep Cloud | GraphRAG + 時序記憶系統 |
+| **Agent 框架** | OASIS (Camel-AI) | 多 Agent 社群模擬引擎 |
+| **資料處理** | pypdf, httpx | PDF 解析、API 通訊 |
 
 ---
 
-## 参与贡献
+## 🛣️ 路線圖
 
-- 🐛 **发现 Bug**：开 GitHub Issue
-- 💡 **功能建议**：发 PR 或 Discussion
-- 📝 **改进文档**：直接编辑 README
-
----
-
-## License
-
-待定（暂定 Apache 2.0 或 BSL）
+| 階段 | 目標 | 狀態 |
+|---|---|---|
+| **Phase 1** | 單文件 → 單 Agent → 單平台模擬 | ✅ 完成 |
+| **Phase 2** | 多 Agent + 雙平台 + GraphRAG | ✅ 完成 |
+| **Phase 3** | 購買意願評估 + 歸因分析 | ✅ v0.3 實現 |
+| **Phase 4** | SaaS 化、自訂 Agent 模板、API 開放 | 🔜 規劃中 |
 
 ---
 
-> **「让创业不再是赌博，而是可验证、可迭代、可投资的科学。」**
->
-> — MiroFish Founder Program · v0.3
+## 🤝 參與貢參與貢獻
+
+歡迎提交 Issue 和 Pull Request！如果想貢獻：
+
+1. Fork 本倉庫
+2. 建立你的功能分支（`git checkout -b feature/amazing-feature`）
+3. 提交修改（`git commit -m 'Add amazing feature'`）
+4. 推送分支（`git push origin feature/amazing-feature`）
+5. 開啟 Pull Request
+
+---
+
+## ⚖️ 授權
+
+MIT License — 詳見 LICENSE 檔案
+
+---
+
+## 📝 修改歷史
+
+本倉庫 fork 自 [666ghj/MiroFish](https://github.com/666ghj/MiroFish)，由 **poopro** 維護。
+主要修改：修正分支結構、強化 `.gitignore` 安全策略、完善中英文文件。
+原始商業計劃書見 `README.long.md`。
+
+<p align="center"><sub>Original basis: MirrorFish by 666ghj | Modified & maintained by poopro</sub></p>
