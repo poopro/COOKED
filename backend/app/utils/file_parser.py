@@ -95,6 +95,21 @@ class FileParser:
     
     @staticmethod
     def _extract_from_pdf(file_path: str) -> str:
+        text_parts = []
+        try:
+            from pypdf import PdfReader
+            reader = PdfReader(file_path)
+            for page in reader.pages:
+                text = page.extract_text() or ""
+                if text.strip():
+                    text_parts.append(text)
+            return "\n\n".join(text_parts)
+        except ImportError:
+            pass
+        except Exception:
+            if text_parts:
+                return "\n\n".join(text_parts)
+
         """从PDF提取文本"""
         try:
             import fitz  # PyMuPDF
