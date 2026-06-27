@@ -50,6 +50,11 @@ def create_app(config_class=Config):
     
     # 请求日志中间件
     @app.before_request
+    def apply_local_demo_keys():
+        from .utils.demo_keys import apply_demo_key_overrides
+        apply_demo_key_overrides()
+
+    @app.before_request
     def log_request():
         logger = get_logger('mirofish.request')
         logger.debug(f"请求: {request.method} {request.path}")

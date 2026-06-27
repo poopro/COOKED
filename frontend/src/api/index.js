@@ -1,5 +1,16 @@
 import axios from 'axios'
 
+export const DEMO_KEYS_STORAGE_KEY = 'cooked_demo_keys'
+
+const loadDemoKeys = () => {
+  try {
+    return JSON.parse(localStorage.getItem(DEMO_KEYS_STORAGE_KEY) || '{}') || {}
+  } catch (error) {
+    console.warn('Failed to load local demo keys:', error)
+    return {}
+  }
+}
+
 // 创建axios实例
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001',
@@ -12,6 +23,14 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   config => {
+    const keys = loadDemoKeys()
+    config.headers = config.headers || {}
+
+    if (keys.llmApiKey) config.headers['X-LLM-API-Key'] = keys.llmApiKey
+    if (keys.llmBaseUrl) config.headers['X-LLM-Base-URL'] = keys.llmBaseUrl
+    if (keys.llmModel) config.headers['X-LLM-Model'] = keys.llmModel
+    if (keys.zepApiKey) config.headers['X-ZEP-API-Key'] = keys.zepApiKey
+
     return config
   },
   error => {

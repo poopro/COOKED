@@ -227,13 +227,46 @@
             </div>
 
             <!-- 啟動按鈕 -->
+
+            <!-- Local API key settings -->
+            <div class="console-section api-key-section">
+              <div class="console-header">
+                <span class="console-label">03 / API Key &#35373;&#23450;</span>
+                <span class="console-meta">&#21482;&#23384;&#22312;&#26412;&#27231;&#28687;&#35261;&#22120;&#65292;&#19981;&#26371;&#23531;&#36914; GitHub</span>
+              </div>
+              <div class="api-key-grid">
+                <label class="api-key-field">
+                  <span>OpenRouter API Key</span>
+                  <input v-model="demoKeys.llmApiKey" type="password" autocomplete="off" placeholder="sk-or-v1-..." :disabled="loading" @change="saveDemoKeys" />
+                </label>
+                <label class="api-key-field">
+                  <span>LLM Base URL</span>
+                  <input v-model="demoKeys.llmBaseUrl" type="text" autocomplete="off" placeholder="https://openrouter.ai/api/v1" :disabled="loading" @change="saveDemoKeys" />
+                </label>
+                <label class="api-key-field">
+                  <span>&#27169;&#22411;</span>
+                  <input v-model="demoKeys.llmModel" type="text" autocomplete="off" placeholder="openai/gpt-4o-mini" :disabled="loading" @change="saveDemoKeys" />
+                </label>
+                <label class="api-key-field">
+                  <span>Zep API Key&#65288;&#21487;&#36984;&#65292;&#30693;&#35672;&#22294;&#35676;&#29992;&#65289;</span>
+                  <input v-model="demoKeys.zepApiKey" type="password" autocomplete="off" placeholder="&#21487;&#20808;&#30041;&#31354;&#65307;&#27794;&#26377;&#23427;&#23601;&#36339;&#36942;&#30693;&#35672;&#22294;&#35676; API" :disabled="loading" @change="saveDemoKeys" />
+                </label>
+              </div>
+              <div class="api-key-actions">
+                <button class="ai-gen-btn" type="button" @click="saveDemoKeys" :disabled="loading">&#20786;&#23384;&#26412;&#27231; API Key</button>
+                <span v-if="apiKeySaved" class="api-key-saved">&#24050;&#20786;&#23384;</span>
+                <span v-if="!hasDemoLLMKey" class="api-key-warning">&#35531;&#20808;&#36664;&#20837; OpenRouter API Key &#25165;&#33021;&#38283;&#22987;&#27169;&#25836;&#12290;</span>
+              </div>
+            </div>
+
             <div class="console-section btn-section">
               <button 
                 class="start-engine-btn"
                 @click="startSimulation"
                 :disabled="!canSubmit || loading"
               >
-                <span v-if="!loading">開始驗證我的點子</span>
+                <span v-if="!hasDemoLLMKey">&#35531;&#20808;&#36664;&#20837; API Key</span>
+                <span v-else-if="!loading">&#38283;&#22987;&#39511;&#35657;&#25105;&#30340;&#40670;&#23376;</span>
                 <span v-else>正在召集虛擬消費者...</span>
                 <span class="btn-arrow">→</span>
               </button>
@@ -313,11 +346,50 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import HistoryDatabase from '../components/HistoryDatabase.vue'
 
 const router = useRouter()
+
+
+const DEMO_KEYS_STORAGE_KEY = 'cooked_demo_keys'
+
+const demoKeys = ref({
+  llmApiKey: '',
+  llmBaseUrl: 'https://openrouter.ai/api/v1',
+  llmModel: 'openai/gpt-4o-mini',
+  zepApiKey: ''
+})
+const apiKeySaved = ref(false)
+
+const loadDemoKeys = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(DEMO_KEYS_STORAGE_KEY) || '{}') || {}
+    demoKeys.value = { ...demoKeys.value, ...saved }
+  } catch (err) {
+    console.warn('Failed to load local API key settings:', err)
+  }
+}
+
+const saveDemoKeys = () => {
+  const cleaned = {
+    llmApiKey: demoKeys.value.llmApiKey.trim(),
+    llmBaseUrl: demoKeys.value.llmBaseUrl.trim() || 'https://openrouter.ai/api/v1',
+    llmModel: demoKeys.value.llmModel.trim() || 'openai/gpt-4o-mini',
+    zepApiKey: demoKeys.value.zepApiKey.trim()
+  }
+  demoKeys.value = cleaned
+  localStorage.setItem(DEMO_KEYS_STORAGE_KEY, JSON.stringify(cleaned))
+  apiKeySaved.value = true
+  window.setTimeout(() => {
+    apiKeySaved.value = false
+  }, 1800)
+}
+
+const hasDemoLLMKey = computed(() => demoKeys.value.llmApiKey.trim().length > 0)
+
+onMounted(loadDemoKeys)
 
 // 表單資料
 const formData = ref({
@@ -338,7 +410,7 @@ const fileInput = ref(null)
 
 // 計算屬性：是否可提交
 const canSubmit = computed(() => {
-  return formData.value.simulationRequirement.trim() !== '' && files.value.length > 0
+  return hasDemoLLMKey.value && formData.value.simulationRequirement.trim() !== '' && files.value.length > 0
 })
 
 // 觸發檔案選擇
@@ -1133,6 +1205,64 @@ const startSimulation = () => {
   100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
 }
 
+
+.api-key-section {
+  border-top: 1px solid #eee;
+}
+
+.api-key-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.api-key-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: #666;
+}
+
+.api-key-field input {
+  min-width: 0;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  color: var(--black);
+  padding: 10px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  outline: none;
+}
+
+.api-key-field input:focus {
+  border-color: var(--orange);
+  background: var(--white);
+}
+
+.api-key-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.api-key-saved,
+.api-key-warning {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.api-key-saved {
+  color: #0a7a38;
+}
+
+.api-key-warning {
+  color: var(--orange);
+}
+
 /* Founder Section（一人公司加速器） */
 .founder-section {
   margin: 80px 0 60px;
@@ -1310,6 +1440,11 @@ const startSimulation = () => {
   .hero-logo {
     max-width: 200px;
     margin-bottom: 20px;
+  }
+
+
+  .api-key-grid {
+    grid-template-columns: 1fr;
   }
 
   .founder-cards {
