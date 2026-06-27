@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">COOKED? Node Map</title>
+  <desc id="desc">Abstract public opinion knowledge graph for COOKED?</desc>
+  <rect width="1200" height="720" fill="#f4efe4"/>
+  <g fill="none" stroke="#111" stroke-width="2" opacity=".86">
+    <path d="M160 156L306 248 454 166 604 292 784 180 990 260"/>
+    <path d="M306 248L370 438 604 292 704 502 990 260"/>
+    <path d="M160 156L220 526 370 438 704 502 980 570"/>
+    <path d="M454 166L370 438 220 526"/>
+    <path d="M784 180L704 502 980 570"/>
+  </g>
+  <g fill="#f4efe4" stroke="#111" stroke-width="3">
+    <circle cx="160" cy="156" r="44"/>
+    <circle cx="306" cy="248" r="34"/>
+    <circle cx="454" cy="166" r="52"/>
+    <circle cx="604" cy="292" r="42"/>
+    <circle cx="784" cy="180" r="48"/>
+    <circle cx="990" cy="260" r="40"/>
+    <circle cx="220" cy="526" r="50"/>
+    <circle cx="370" cy="438" r="38"/>
+    <circle cx="704" cy="502" r="56"/>
+    <circle cx="980" cy="570" r="46"/>
+  </g>
+  <g fill="#111" font-family="Courier New, monospace" font-size="18" font-weight="700" text-anchor="middle">
+    <text x="160" y="162">VC</text>
+    <text x="306" y="254">CFO</text>
+    <text x="454" y="172">USER</text>
+    <text x="604" y="298">PRESS</text>
+    <text x="784" y="186">RIVAL</text>
+    <text x="990" y="266">MARKET</text>
+    <text x="220" y="532">RISK</text>
+    <text x="370" y="444">HYPE</text>
+    <text x="704" y="508">PLAZA</text>
+    <text x="980" y="576">DOOM</text>
+  </g>
+  <text x="60" y="650" fill="#111" font-family="Courier New, monospace" font-size="18" font-weight="700" letter-spacing="4">OUTPUT 317 / SEED 3396188657 / NODES: PUBLIC ROLES</text>
+</svg>

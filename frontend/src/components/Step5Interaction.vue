@@ -166,7 +166,7 @@
               <div class="tools-card-avatar">R</div>
               <div class="tools-card-info">
                 <div class="tools-card-name">Report Agent - Chat</div>
-                <div class="tools-card-subtitle">報告生成智慧體的快速對話版本，可呼叫 4 種專業工具，擁有 MiroFish 的完整記憶</div>
+                <div class="tools-card-subtitle">報告生成智慧體的快速對話版本，可呼叫 4 種專業工具，擁有 COOKED? 的完整記憶</div>
               </div>
               <button class="tools-card-toggle" @click="showToolsDetail = !showToolsDetail">
                 <svg :class="{ 'is-expanded': showToolsDetail }" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">

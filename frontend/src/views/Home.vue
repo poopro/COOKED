@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <div class="home-container">
     <!-- 頂部導覽列 -->
     <nav class="navbar">
-      <div class="nav-brand">MIROFISH</div>
+      <div class="nav-brand">COOKED?</div>
       <div class="nav-links">
         <a href="https://github.com/666ghj/MiroFish" target="_blank" class="github-link">
           造訪我們的 Github 首頁 <span class="arrow">↗</span>
@@ -26,13 +26,13 @@
           
           <div class="hero-desc">
             <p>
-              不用先燒錢、不用先辭職、不用先做產品。把你的<span class="highlight-bold">商業點子、產品企劃、廣告文案</span>丟進 <span class="highlight-bold">MiroFish</span>，我們會自動生成一個由<span class="highlight-orange">百萬級 AI 消費者</span>構成的虛擬市場，讓他們替你試用、討論、按讚或開酸。最後告訴你一件事 ——
+              不用先燒錢、不用先辭職、不用先做產品。把你的<span class="highlight-bold">商業點子、產品企劃、廣告文案</span>丟進 <span class="highlight-bold">COOKED?</span>，我們會自動生成一個由<span class="highlight-orange">百萬級 AI 消費者</span>構成的虛擬市場，讓他們替你試用、討論、按讚或開酸。最後告訴你一件事 ——
             </p>
             <p class="slogan-text">
               這個點子會紅嗎？為什麼會？為什麼不會？<span class="blinking-cursor">_</span>
             </p>
             <p style="margin-top:1.5rem;font-size:0.95rem;">
-              MiroFish 是為<span class="highlight-bold">一人公司、獨立開發者、小型新創團隊</span>打造的「上線前測試場」。配合本公司即將啟用的<span class="highlight-code">實體消費者沙盒基地</span>，我們讓創業不再是賭博，而是<span class="highlight-orange">可驗證、可迭代、可投資</span>的科學。
+              COOKED? 是為<span class="highlight-bold">一人公司、獨立開發者、小型新創團隊</span>打造的「上線前測試場」。配合本公司即將啟用的<span class="highlight-code">實體消費者沙盒基地</span>，我們讓創業不再是賭博，而是<span class="highlight-orange">可驗證、可迭代、可投資</span>的科學。
             </p>
           </div>
            
@@ -42,7 +42,7 @@
         <div class="hero-right">
           <!-- Logo 區 -->
           <div class="logo-container">
-            <img src="../assets/logo/MiroFish_logo_left.jpeg" alt="MiroFish Logo" class="hero-logo" />
+            <img src="../assets/logo/MiroFish_logo_left.jpeg" alt="COOKED? Logo" class="hero-logo" />
           </div>
           
           <button class="scroll-down-btn" @click="scrollToBottom">
@@ -222,7 +222,7 @@
                   rows="8"
                   :disabled="loading"
                 ></textarea>
-                <div class="model-badge">引擎: MiroFish-Founder v0.2</div>
+                <div class="model-badge">引擎: COOKED? DoomTest v0.2</div>
               </div>
             </div>
 
@@ -247,7 +247,7 @@
         <div class="founder-header">
           <span class="founder-tag">FOUNDER PROGRAM</span>
           <h2 class="founder-title">
-            為什麼一人公司選 MiroFish？<br>
+            為什麼一人公司選 COOKED?？<br>
             <span class="founder-subtitle">業界唯一「虛擬＋實體」雙沙盒驗證</span>
           </h2>
         </div>
@@ -1334,3 +1334,4 @@ const startSimulation = () => {
   }
 }
 </style>
+

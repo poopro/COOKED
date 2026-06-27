@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
+        <div class="brand" @click="router.push('/')">COOKED?</div>
       </div>
       
       <div class="header-center">
@@ -22,8 +22,8 @@
 
       <div class="header-right">
         <div class="workflow-step">
-          <span class="step-num">Step 3/5</span>
-          <span class="step-name">开始模拟</span>
+          <span class="step-num">第 3 / 5 步</span>
+          <span class="step-name">市場推演</span>
         </div>
         <div class="step-divider"></div>
         <span class="status-indicator" :class="statusClass">
@@ -115,16 +115,16 @@ const statusClass = computed(() => {
 })
 
 const statusText = computed(() => {
-  if (currentStatus.value === 'error') return 'Error'
-  if (currentStatus.value === 'completed') return 'Completed'
-  return 'Running'
+  if (currentStatus.value === 'error') return '錯誤'
+  if (currentStatus.value === 'completed') return '已完成'
+  return '執行中'
 })
 
 const isSimulating = computed(() => currentStatus.value === 'processing')
 
 // --- Helpers ---
 const addLog = (msg) => {
-  const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
+  const time = new Date().toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + new Date().getMilliseconds().toString().padStart(3, '0')
   systemLogs.value.push({ time, msg })
   if (systemLogs.value.length > 200) {
     systemLogs.value.shift()
@@ -146,7 +146,7 @@ const toggleMaximize = (target) => {
 
 const handleGoBack = async () => {
   // 在返回 Step 2 之前，先关闭正在运行的模拟
-  addLog('准备返回 Step 2，正在关闭模拟...')
+  addLog('準備返回第 2 步，正在關閉模擬...')
   
   // 停止轮询
   stopGraphRefresh()
@@ -195,7 +195,7 @@ const handleGoBack = async () => {
 const handleNextStep = () => {
   // Step3Simulation 组件会直接处理报告生成和路由跳转
   // 这个方法仅作为备用
-  addLog('进入 Step 4: 报告生成')
+  addLog('進入第 4 步：生成報告')
 }
 
 // --- Data Logic ---

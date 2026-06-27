@@ -31,3 +31,6 @@ dist/
 Thumbs.db  
   
 _extracted_gap.html  
+
+# Local demo secrets
+backend/app/local_demo_secrets.py

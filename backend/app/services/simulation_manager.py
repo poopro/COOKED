@@ -17,6 +17,12 @@ from ..utils.logger import get_logger
 from .zep_entity_reader import ZepEntityReader, FilteredEntities
 from .oasis_profile_generator import OasisProfileGenerator, OasisAgentProfile
 from .simulation_config_generator import SimulationConfigGenerator, SimulationParameters
+from .character_customizer import (
+    normalize_character_settings,
+    filter_platform_entity_types,
+    apply_character_mix,
+    build_initial_cooked_meter,
+)
 
 logger = get_logger('mirofish.simulation')
 
@@ -234,7 +240,9 @@ class SimulationManager:
         defined_entity_types: Optional[List[str]] = None,
         use_llm_for_profiles: bool = True,
         progress_callback: Optional[callable] = None,
-        parallel_profile_count: int = 3
+        parallel_profile_count: int = 3,
+        character_settings: Optional[Dict[str, Any]] = None,
+        platform_tags: Optional[List[str]] = None
     ) -> SimulationState:
         """
         准备模拟环境（全程自动化）
@@ -267,6 +275,11 @@ class SimulationManager:
             self._save_simulation_state(state)
             
             sim_dir = self._get_simulation_dir(simulation_id)
+            character_settings = normalize_character_settings(character_settings or {})
+            if platform_tags:
+                character_settings["platform_tags"] = platform_tags
+            platform_tags = character_settings.get("platform_tags", [])
+            defined_entity_types = filter_platform_entity_types(defined_entity_types)
             
             # ========== 阶段1: 读取并过滤实体 ==========
             if progress_callback:
@@ -284,7 +297,7 @@ class SimulationManager:
             )
             
             state.entities_count = filtered.filtered_count
-            state.entity_types = list(filtered.entity_types)
+            state.entity_types = filter_platform_entity_types(list(filtered.entity_types)) or []
             
             if progress_callback:
                 progress_callback(
@@ -344,6 +357,7 @@ class SimulationManager:
                 realtime_output_path=realtime_output_path,  # 实时保存路径
                 output_platform=realtime_platform  # 输出格式
             )
+            profiles = apply_character_mix(profiles, character_settings)
             
             state.profiles_count = len(profiles)
             
@@ -420,8 +434,13 @@ class SimulationManager:
             
             # 保存配置文件
             config_path = os.path.join(sim_dir, "simulation_config.json")
+            config_payload = sim_params.to_dict()
+            config_payload["character_settings"] = character_settings
+            config_payload["platform_tags"] = platform_tags
+            config_payload["entity_types"] = state.entity_types
+            config_payload["cooked_meter"] = build_initial_cooked_meter(character_settings)
             with open(config_path, 'w', encoding='utf-8') as f:
-                f.write(sim_params.to_json())
+                json.dump(config_payload, f, ensure_ascii=False, indent=2)
             
             state.config_generated = True
             state.config_reasoning = sim_params.generation_reasoning
@@ -459,6 +478,26 @@ class SimulationManager:
         """获取模拟状态"""
         return self._load_simulation_state(simulation_id)
     
+    def delete_simulation(self, simulation_id: str) -> bool:
+        """Delete one simulation folder from local history."""
+        if not simulation_id or not simulation_id.startswith("sim_"):
+            return False
+
+        base_dir = os.path.abspath(self.SIMULATION_DATA_DIR)
+        sim_dir = os.path.abspath(os.path.join(base_dir, simulation_id))
+
+        if os.path.commonpath([base_dir, sim_dir]) != base_dir:
+            raise ValueError("Invalid simulation path")
+
+        if not os.path.isdir(sim_dir):
+            self._simulations.pop(simulation_id, None)
+            return False
+
+        shutil.rmtree(sim_dir)
+        self._simulations.pop(simulation_id, None)
+        logger.info(f"Deleted simulation history: {simulation_id}")
+        return True
+
     def list_simulations(self, project_id: Optional[str] = None) -> List[SimulationState]:
         """列出所有模拟"""
         simulations = []

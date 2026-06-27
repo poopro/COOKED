@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="app-header">
       <div class="header-left">
-        <div class="brand" @click="router.push('/')">MIROFISH</div>
+        <div class="brand" @click="router.push('/')">COOKED?</div>
       </div>
       
       <div class="header-center">
@@ -15,14 +15,14 @@
             :class="{ active: viewMode === mode }"
             @click="viewMode = mode"
           >
-            {{ { graph: '图谱', split: '双栏', workbench: '工作台' }[mode] }}
+            {{ { graph: '圖譜', split: '雙欄', workbench: '工作台' }[mode] }}
           </button>
         </div>
       </div>
 
       <div class="header-right">
         <div class="workflow-step">
-          <span class="step-num">Step {{ currentStep }}/5</span>
+          <span class="step-num">第 {{ currentStep }} / 5 步</span>
           <span class="step-name">{{ stepNames[currentStep - 1] }}</span>
         </div>
         <div class="step-divider"></div>
@@ -48,9 +48,18 @@
 
       <!-- Right Panel: Step Components -->
       <div class="panel-wrapper right" :style="rightPanelStyle">
-        <!-- Step 1: 图谱构建 -->
+        <div v-if="missingPendingUpload" class="empty-start-state">
+          <div class="empty-kicker">COOKED? / 新推演</div>
+          <h2>尚未選擇要分析的創業資料</h2>
+          <p>請先回到首頁，上傳商業計畫、產品介紹或廣告文案，再啟動圖譜構建與市場模擬。</p>
+          <div class="empty-actions">
+            <button class="primary-btn" @click="router.push('/')">回首頁上傳</button>
+            <button class="secondary-btn" @click="router.push('/?history=1')">查看歷史紀錄</button>
+          </div>
+        </div>
+        <!-- Step 1: ?曇停?遣 -->
         <Step1GraphBuild 
-          v-if="currentStep === 1"
+          v-else-if="currentStep === 1"
           :currentPhase="currentPhase"
           :projectData="projectData"
           :ontologyProgress="ontologyProgress"
@@ -59,7 +68,7 @@
           :systemLogs="systemLogs"
           @next-step="handleNextStep"
         />
-        <!-- Step 2: 环境搭建 -->
+        <!-- Step 2: ?臬??剖遣 -->
         <Step2EnvSetup
           v-else-if="currentStep === 2"
           :projectData="projectData"
@@ -90,14 +99,15 @@ const router = useRouter()
 const viewMode = ref('split') // graph | split | workbench
 
 // Step State
-const currentStep = ref(1) // 1: 图谱构建, 2: 环境搭建, 3: 开始模拟, 4: 报告生成, 5: 深度互动
-const stepNames = ['图谱构建', '环境搭建', '开始模拟', '报告生成', '深度互动']
+const currentStep = ref(1)
+const stepNames = ['圖譜建構', '模擬設定', '市場推演', '生成報告', '互動訪談']
 
 // Data State
 const currentProjectId = ref(route.params.projectId)
 const loading = ref(false)
 const graphLoading = ref(false)
 const error = ref('')
+const missingPendingUpload = ref(false)
 const projectData = ref(null)
 const graphData = ref(null)
 const currentPhase = ref(-1) // -1: Upload, 0: Ontology, 1: Build, 2: Complete
@@ -124,13 +134,15 @@ const rightPanelStyle = computed(() => {
 
 // --- Status Computed ---
 const statusClass = computed(() => {
+  if (missingPendingUpload.value) return 'pending'
   if (error.value) return 'error'
   if (currentPhase.value >= 2) return 'completed'
   return 'processing'
 })
 
 const statusText = computed(() => {
-  if (error.value) return 'Error'
+  if (missingPendingUpload.value) return '等待上傳'
+  if (error.value) return '錯誤'
   if (currentPhase.value >= 2) return 'Ready'
   if (currentPhase.value === 1) return 'Building Graph'
   if (currentPhase.value === 0) return 'Generating Ontology'
@@ -159,11 +171,10 @@ const toggleMaximize = (target) => {
 const handleNextStep = (params = {}) => {
   if (currentStep.value < 5) {
     currentStep.value++
-    addLog(`进入 Step ${currentStep.value}: ${stepNames[currentStep.value - 1]}`)
-    
-    // 如果是从 Step 2 进入 Step 3，记录模拟轮数配置
+    addLog(`進入步驟 ${currentStep.value}: ${stepNames[currentStep.value - 1]}`)
+
     if (currentStep.value === 3 && params.maxRounds) {
-      addLog(`自定义模拟轮数: ${params.maxRounds} 轮`)
+      addLog(`模擬輪數設定：${params.maxRounds}`)
     }
   }
 }
@@ -171,7 +182,7 @@ const handleNextStep = (params = {}) => {
 const handleGoBack = () => {
   if (currentStep.value > 1) {
     currentStep.value--
-    addLog(`返回 Step ${currentStep.value}: ${stepNames[currentStep.value - 1]}`)
+    addLog(`返回步驟 ${currentStep.value}: ${stepNames[currentStep.value - 1]}`)
   }
 }
 
@@ -189,10 +200,13 @@ const initProject = async () => {
 const handleNewProject = async () => {
   const pending = getPendingUpload()
   if (!pending.isPending || pending.files.length === 0) {
-    error.value = 'No pending files found.'
-    addLog('Error: No pending files found for new project.')
+    missingPendingUpload.value = true
+    error.value = ''
+    currentPhase.value = -1
+    addLog('No upload payload found. Waiting for user to start from home page.')
     return
   }
+  missingPendingUpload.value = false
   
   try {
     loading.value = true
@@ -216,7 +230,7 @@ const handleNewProject = async () => {
       await startBuildGraph()
     } else {
       error.value = res.error || 'Ontology generation failed'
-      addLog(`Error generating ontology: ${error.value}`)
+      addLog(`本體生成錯誤：${error.value}`)
     }
   } catch (err) {
     error.value = err.message
@@ -229,7 +243,7 @@ const handleNewProject = async () => {
 const loadProject = async () => {
   try {
     loading.value = true
-    addLog(`Loading project ${currentProjectId.value}...`)
+    addLog(`載入專案 ${currentProjectId.value}...`)
     const res = await getProject(currentProjectId.value)
     if (res.success) {
       projectData.value = res.data
@@ -248,7 +262,7 @@ const loadProject = async () => {
       }
     } else {
       error.value = res.error
-      addLog(`Error loading project: ${res.error}`)
+      addLog(`操作失敗：${res.error}`)
     }
   } catch (err) {
     error.value = err.message
@@ -281,7 +295,7 @@ const startBuildGraph = async () => {
       startPollingTask(res.data.task_id)
     } else {
       error.value = res.error
-      addLog(`Error starting build: ${res.error}`)
+      addLog(`操作失敗：${res.error}`)
     }
   } catch (err) {
     error.value = err.message
@@ -356,7 +370,7 @@ const pollTaskStatus = async (taskId) => {
 
 const loadGraph = async (graphId) => {
   graphLoading.value = true
-  addLog(`Loading full graph data: ${graphId}`)
+  addLog(`載入完整圖譜資料：${graphId}`)
   try {
     const res = await getGraphData(graphId)
     if (res.success) {
@@ -538,3 +552,10 @@ onUnmounted(() => {
   border-right: 1px solid #EAEAEA;
 }
 </style>
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 240" role="img" aria-labelledby="title desc">
+  <title id="title">COOKED?</title>
+  <desc id="desc">COOKED? research-style wordmark with node marks.</desc>
+  <rect width="960" height="240" fill="#f4efe4"/>
+  <path d="M46 44h868v152H46z" fill="none" stroke="#111" stroke-width="3"/>
+  <path d="M70 68h92v104H70zM798 68h92v104h-92z" fill="none" stroke="#111" stroke-width="2"/>
+  <text x="190" y="146" fill="#111" font-family="Arial Black, Helvetica, sans-serif" font-size="92" font-weight="900" letter-spacing="-2">COOKED?</text>
+  <text x="195" y="176" fill="#111" font-family="Courier New, monospace" font-size="15" font-weight="700" letter-spacing="5">PUBLIC OPINION SIMULATOR</text>
+  <circle cx="96" cy="96" r="10" fill="#111"/>
+  <circle cx="136" cy="144" r="10" fill="#111"/>
+  <path d="M96 96l40 48" fill="none" stroke="#111" stroke-width="2"/>
+  <circle cx="824" cy="96" r="10" fill="#111"/>
+  <circle cx="864" cy="144" r="10" fill="#111"/>
+  <path d="M824 96l40 48" fill="none" stroke="#111" stroke-width="2"/>
+</svg>

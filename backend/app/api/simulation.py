@@ -18,6 +18,11 @@ from ..services.llm_cost_estimator import (
     load_simulation_config_from_disk,
 )
 from ..services.purchase_intent_evaluator import PurchaseIntentEvaluator
+from ..services.character_customizer import (
+    normalize_character_settings,
+    filter_platform_entity_types,
+    estimate_cooked_meter,
+)
 from ..utils.logger import get_logger
 from ..models.project import ProjectManager
 
@@ -525,9 +530,15 @@ def prepare_simulation():
         # 获取文档文本
         document_text = ProjectManager.get_extracted_text(state.project_id) or ""
         
-        entity_types_list = data.get('entity_types')
+        entity_types_list = filter_platform_entity_types(data.get('entity_types'))
         use_llm_for_profiles = data.get('use_llm_for_profiles', True)
         parallel_profile_count = data.get('parallel_profile_count', 5)
+        character_settings = normalize_character_settings(data.get('character_settings') or {})
+        platform_tags = data.get('platform_tags') or character_settings.get('platform_tags', [])
+        if platform_tags:
+            character_settings['platform_tags'] = platform_tags
+        if data.get('target_profile_count') is not None:
+            character_settings['target_profile_count'] = int(data.get('target_profile_count') or character_settings.get('target_profile_count') or 1)
         
         # ========== 同步获取实体数量（在后台任务启动前） ==========
         # 这样前端在调用prepare后立即就能获取到预期Agent总数
@@ -542,7 +553,7 @@ def prepare_simulation():
             )
             # 保存实体数量到状态（供前端立即获取）
             state.entities_count = filtered_preview.filtered_count
-            state.entity_types = list(filtered_preview.entity_types)
+            state.entity_types = filter_platform_entity_types(list(filtered_preview.entity_types)) or []
             logger.info(f"预期实体数量: {filtered_preview.filtered_count}, 类型: {filtered_preview.entity_types}")
         except Exception as e:
             logger.warning(f"同步获取实体数量失败（将在后台任务中重试）: {e}")
@@ -554,7 +565,9 @@ def prepare_simulation():
             task_type="simulation_prepare",
             metadata={
                 "simulation_id": simulation_id,
-                "project_id": state.project_id
+                "project_id": state.project_id,
+                "character_settings": character_settings,
+                "platform_tags": platform_tags
             }
         )
         
@@ -644,7 +657,9 @@ def prepare_simulation():
                     defined_entity_types=entity_types_list,
                     use_llm_for_profiles=use_llm_for_profiles,
                     progress_callback=progress_callback,
-                    parallel_profile_count=parallel_profile_count
+                    parallel_profile_count=parallel_profile_count,
+                    character_settings=character_settings,
+                    platform_tags=platform_tags
                 )
                 
                 # 任务完成
@@ -842,6 +857,32 @@ def get_simulation(simulation_id: str):
         }), 500
 
 
+@simulation_bp.route('/<simulation_id>', methods=['DELETE'])
+def delete_simulation(simulation_id: str):
+    """Delete one simulation from local history."""
+    try:
+        manager = SimulationManager()
+        deleted = manager.delete_simulation(simulation_id)
+        if not deleted:
+            return jsonify({
+                "success": False,
+                "error": f"Simulation not found: {simulation_id}"
+            }), 404
+
+        return jsonify({
+            "success": True,
+            "data": {"simulation_id": simulation_id, "deleted": True}
+        })
+
+    except Exception as e:
+        logger.error(f"Delete simulation failed: {simulation_id}, error={str(e)}")
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
+
 @simulation_bp.route('/list', methods=['GET'])
 def list_simulations():
     """
@@ -982,6 +1023,9 @@ def get_simulation_history():
                 sim_dict["simulation_requirement"] = config.get("simulation_requirement", "")
                 time_config = config.get("time_config", {})
                 sim_dict["total_simulation_hours"] = time_config.get("total_simulation_hours", 0)
+                sim_dict["platform_tags"] = config.get("platform_tags", [])
+                sim_dict["character_settings"] = config.get("character_settings", {})
+                sim_dict["entity_types"] = filter_platform_entity_types(config.get("entity_types") or sim_dict.get("entity_types") or []) or []
                 # 推荐轮数（后备值）
                 recommended_rounds = int(
                     time_config.get("total_simulation_hours", 0) * 60 / 
@@ -990,6 +1034,9 @@ def get_simulation_history():
             else:
                 sim_dict["simulation_requirement"] = ""
                 sim_dict["total_simulation_hours"] = 0
+                sim_dict["platform_tags"] = []
+                sim_dict["character_settings"] = {}
+                sim_dict["entity_types"] = filter_platform_entity_types(sim_dict.get("entity_types") or []) or []
                 recommended_rounds = 0
             
             # 获取运行状态（从 run_state.json 读取用户设置的实际轮数）
@@ -1016,6 +1063,20 @@ def get_simulation_history():
             
             # 获取关联的 report_id（查找该 simulation 最新的 report）
             sim_dict["report_id"] = _get_report_id_for_simulation(sim.simulation_id)
+            
+            report_text = ""
+            try:
+                if sim_dict.get("report_id"):
+                    report_dir = os.path.join(os.path.dirname(__file__), "../../uploads/reports", sim_dict["report_id"])
+                    for report_name in ("report.md", "content.md", "summary.md"):
+                        report_path = os.path.join(report_dir, report_name)
+                        if os.path.exists(report_path):
+                            with open(report_path, "r", encoding="utf-8") as rf:
+                                report_text = rf.read()
+                            break
+            except Exception:
+                report_text = ""
+            sim_dict["cooked_meter"] = estimate_cooked_meter(sim_dict, config=config or {}, report_text=report_text)
             
             # 添加版本号
             sim_dict["version"] = "v1.0.2"

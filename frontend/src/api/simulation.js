@@ -1,7 +1,7 @@
-import service, { requestWithRetry } from './index'
+﻿import service, { requestWithRetry } from './index'
 
 /**
- * 建立模擬
+ * 撱箇?璅⊥
  * @param {Object} data - { project_id, graph_id?, enable_twitter?, enable_reddit? }
  */
 export const createSimulation = (data) => {
@@ -9,15 +9,14 @@ export const createSimulation = (data) => {
 }
 
 /**
- * 準備模擬環境（非同步任務）
- * @param {Object} data - { simulation_id, entity_types?, use_llm_for_profiles?, parallel_profile_count?, force_regenerate? }
+ * 皞?璅⊥?啣?嚗??郊隞餃?嚗? * @param {Object} data - { simulation_id, entity_types?, use_llm_for_profiles?, parallel_profile_count?, force_regenerate? }
  */
 export const prepareSimulation = (data) => {
   return requestWithRetry(() => service.post('/api/simulation/prepare', data), 3, 1000)
 }
 
 /**
- * 查詢準備任務進度
+ * ?亥岷皞?隞餃??脣漲
  * @param {Object} data - { task_id?, simulation_id? }
  */
 export const getPrepareStatus = (data) => {
@@ -25,15 +24,14 @@ export const getPrepareStatus = (data) => {
 }
 
 /**
- * 取得模擬狀態
- * @param {string} simulationId
+ * ??璅⊥??? * @param {string} simulationId
  */
 export const getSimulation = (simulationId) => {
   return service.get(`/api/simulation/${simulationId}`)
 }
 
 /**
- * 取得模擬的 Agent Profiles
+ * ??璅⊥??Agent Profiles
  * @param {string} simulationId
  * @param {string} platform - 'reddit' | 'twitter'
  */
@@ -42,7 +40,7 @@ export const getSimulationProfiles = (simulationId, platform = 'reddit') => {
 }
 
 /**
- * 即時取得產生中的 Agent Profiles
+ * ?單????Ｙ?銝剔? Agent Profiles
  * @param {string} simulationId
  * @param {string} platform - 'reddit' | 'twitter'
  */
@@ -51,7 +49,7 @@ export const getSimulationProfilesRealtime = (simulationId, platform = 'reddit')
 }
 
 /**
- * 取得模擬設定
+ * ??璅⊥閮剖?
  * @param {string} simulationId
  */
 export const getSimulationConfig = (simulationId) => {
@@ -59,17 +57,16 @@ export const getSimulationConfig = (simulationId) => {
 }
 
 /**
- * 即時取得產生中的模擬設定
+ * ?單????Ｙ?銝剔?璅⊥閮剖?
  * @param {string} simulationId
- * @returns {Promise} 回傳設定資訊，包含中繼資料與設定內容
+ * @returns {Promise} ?閮剖?鞈?嚗??思葉蝜潸???閮剖??批捆
  */
 export const getSimulationConfigRealtime = (simulationId) => {
   return service.get(`/api/simulation/${simulationId}/config/realtime`)
 }
 
 /**
- * 列出所有模擬
- * @param {string} projectId - 可選，依專案 ID 篩選
+ * ???芋?? * @param {string} projectId - ?舫嚗?撠? ID 蝭拚
  */
 export const listSimulations = (projectId) => {
   const params = projectId ? { project_id: projectId } : {}
@@ -77,7 +74,7 @@ export const listSimulations = (projectId) => {
 }
 
 /**
- * 啟動模擬
+ * ??璅⊥
  * @param {Object} data - { simulation_id, platform?, max_rounds?, enable_graph_memory_update? }
  */
 export const startSimulation = (data) => {
@@ -85,8 +82,7 @@ export const startSimulation = (data) => {
 }
 
 /**
- * 粗估本次模擬 LLM 費用（依 .env 模型與 simulation_config）
- * @param {string} simulationId
+ * 蝎摯?祆活璅⊥ LLM 鞎餌嚗? .env 璅∪???simulation_config嚗? * @param {string} simulationId
  * @param {Object} [params] - { platform?, max_rounds?, graph_memory? }
  */
 export const getCostEstimate = (simulationId, params = {}) => {
@@ -96,7 +92,7 @@ export const getCostEstimate = (simulationId, params = {}) => {
 }
 
 /**
- * 停止模擬
+ * ?迫璅⊥
  * @param {Object} data - { simulation_id }
  */
 export const stopSimulation = (data) => {
@@ -104,15 +100,14 @@ export const stopSimulation = (data) => {
 }
 
 /**
- * 取得模擬執行即時狀態
- * @param {string} simulationId
+ * ??璅⊥?瑁??單???? * @param {string} simulationId
  */
 export const getRunStatus = (simulationId) => {
   return service.get(`/api/simulation/${simulationId}/run-status`)
 }
 
 /**
- * 取得模擬執行詳細狀態（含最近動作）
+ * ??璅⊥?瑁?閰喟敦????急?餈?雿?
  * @param {string} simulationId
  */
 export const getRunStatusDetail = (simulationId) => {
@@ -120,12 +115,11 @@ export const getRunStatusDetail = (simulationId) => {
 }
 
 /**
- * 取得模擬中的貼文
+ * ??璅⊥銝剔?鞎潭?
  * @param {string} simulationId
  * @param {string} platform - 'reddit' | 'twitter'
- * @param {number} limit - 傳回筆數
- * @param {number} offset - 位移量
- */
+ * @param {number} limit - ?喳?蝑
+ * @param {number} offset - 雿宏?? */
 export const getSimulationPosts = (simulationId, platform = 'reddit', limit = 50, offset = 0) => {
   return service.get(`/api/simulation/${simulationId}/posts`, {
     params: { platform, limit, offset }
@@ -133,10 +127,10 @@ export const getSimulationPosts = (simulationId, platform = 'reddit', limit = 50
 }
 
 /**
- * 取得模擬時間軸（按輪次彙總）
+ * ??璅⊥??頠賂??憚甈∪?蝮踝?
  * @param {string} simulationId
- * @param {number} startRound - 起始輪次
- * @param {number} endRound - 結束輪次
+ * @param {number} startRound - 韏瑕?頛芣活
+ * @param {number} endRound - 蝯?頛芣活
  */
 export const getSimulationTimeline = (simulationId, startRound = 0, endRound = null) => {
   const params = { start_round: startRound }
@@ -147,7 +141,7 @@ export const getSimulationTimeline = (simulationId, startRound = 0, endRound = n
 }
 
 /**
- * 取得 Agent 統計資訊
+ * ?? Agent 蝯梯?鞈?
  * @param {string} simulationId
  */
 export const getAgentStats = (simulationId) => {
@@ -155,7 +149,7 @@ export const getAgentStats = (simulationId) => {
 }
 
 /**
- * 取得模擬動作歷史
+ * ??璅⊥??甇瑕
  * @param {string} simulationId
  * @param {Object} params - { limit, offset, platform, agent_id, round_num }
  */
@@ -164,7 +158,7 @@ export const getSimulationActions = (simulationId, params = {}) => {
 }
 
 /**
- * 關閉模擬環境（優雅退出）
+ * ??璅⊥?啣?嚗??綽?
  * @param {Object} data - { simulation_id, timeout? }
  */
 export const closeSimulationEnv = (data) => {
@@ -172,15 +166,14 @@ export const closeSimulationEnv = (data) => {
 }
 
 /**
- * 取得模擬環境狀態
- * @param {Object} data - { simulation_id }
+ * ??璅⊥?啣???? * @param {Object} data - { simulation_id }
  */
 export const getEnvStatus = (data) => {
   return service.post('/api/simulation/env-status', data)
 }
 
 /**
- * 批次採訪 Agent
+ * ?寞活?∟赤 Agent
  * @param {Object} data - { simulation_id, interviews: [{ agent_id, prompt }] }
  */
 export const interviewAgents = (data) => {
@@ -188,29 +181,34 @@ export const interviewAgents = (data) => {
 }
 
 /**
- * 取得歷史模擬列表（附專案詳情）
- * 用於首頁歷史專案展示
- * @param {number} limit - 傳回筆數上限
+ * ??甇瑕璅⊥?”嚗?撠?閰單?嚗? * ?冽擐?甇瑕撠?撅內
+ * @param {number} limit - ?喳?蝑銝?
  */
 export const getSimulationHistory = (limit = 20) => {
-  return service.get('/api/simulation/history', { params: { limit } })
+  return service.get('/api/simulation/history', { params: { limit }, timeout: 15000 })
 }
 
 /**
- * 對某次模擬跑「購買意願評估」（後端會逐位 agent 跑 LLM）
+ * Delete one simulation from local history.
  * @param {string} simulationId
+ */
+export const deleteSimulation = (simulationId) => {
+  return service.delete(`/api/simulation/${simulationId}`)
+}
+/**
+ * 撠?甈⊥芋?祈??頃鞎瑟?憿?隡啜?敺垢?? agent 頝?LLM嚗? * @param {string} simulationId
  * @param {Object} data - { product_desc, ad_copy, target_audience_criteria, sample_size? }
  */
 export const runPurchaseIntent = (simulationId, data) => {
   return service.post(`/api/simulation/${simulationId}/purchase-intent`, data, {
-    timeout: 5 * 60 * 1000  // 評估可能跑數分鐘，放長一點
+    timeout: 5 * 60 * 1000
   })
 }
-
 /**
- * 讀取最近一次的購買意願評估結果（沒有則回 null）
- */
+ * 霈??餈?甈∠?鞈潸眺??閰摯蝯?嚗?????null嚗? */
 export const getPurchaseIntent = (simulationId) => {
   return service.get(`/api/simulation/${simulationId}/purchase-intent`)
 }
+
+
 

@@ -1,0 +1,706 @@
+:root {
+  --nous-bg: #f4efe4;
+  --nous-bg-2: #ebe4d7;
+  --nous-paper: #fbf7ee;
+  --nous-ink: #11110f;
+  --nous-muted: #625d54;
+  --nous-faint: #d8d0c1;
+  --nous-line: #11110f;
+  --nous-soft-line: rgba(17, 17, 15, 0.2);
+  --nous-accent: #11110f;
+  --nous-warn: #b84832;
+  --nous-radius: 0;
+  --nous-shadow: none;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+  background:
+    linear-gradient(90deg, rgba(17, 17, 15, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(17, 17, 15, 0.035) 1px, transparent 1px),
+    var(--nous-bg) !important;
+  background-size: 44px 44px, 44px 44px, auto !important;
+  color: var(--nous-ink) !important;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", "Noto Sans TC", "Inter", Arial, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+
+body::before {
+  content: "COOKED? / 創業輿論模擬 / OUTPUT 317 / SEED 3396188657";
+  position: fixed;
+  right: 20px;
+  bottom: 14px;
+  z-index: 9999;
+  max-width: calc(100vw - 40px);
+  color: rgba(17, 17, 15, 0.42);
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 12px;
+  z-index: 9998;
+  border: 1px solid rgba(17, 17, 15, 0.28);
+  pointer-events: none;
+}
+
+::selection {
+  background: var(--nous-ink);
+  color: var(--nous-bg);
+}
+
+#app * {
+  box-sizing: border-box;
+}
+
+#app button,
+#app input,
+#app textarea,
+#app select {
+  font-family: inherit !important;
+}
+
+#app .main-view,
+#app .home-container,
+#app .report-view,
+#app .interaction-view,
+#app .simulation-view {
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+}
+
+#app .app-header,
+#app .navbar,
+#app .header,
+#app .top-header {
+  min-height: 76px !important;
+  border: 0 !important;
+  border-bottom: 2px solid var(--nous-line) !important;
+  background: rgba(244, 239, 228, 0.94) !important;
+  color: var(--nous-ink) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(18px);
+}
+
+#app .brand,
+#app .nav-brand {
+  color: var(--nous-ink) !important;
+  font-family: "Space Grotesk", "Noto Sans TC", sans-serif !important;
+  font-size: clamp(22px, 3vw, 36px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 0.9 !important;
+  text-transform: uppercase !important;
+}
+
+#app .brand::after,
+#app .nav-brand::after {
+  content: " / DOOMTEST";
+  display: inline-block;
+  margin-left: 10px;
+  color: var(--nous-muted);
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  vertical-align: middle;
+}
+
+#app .nav-links a,
+#app .github-link {
+  border: 1px solid var(--nous-line) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+  padding: 9px 14px !important;
+  font-family: "JetBrains Mono", "Courier New", monospace !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+}
+
+#app .nav-links a:hover,
+#app .github-link:hover,
+#app button:hover {
+  background: var(--nous-ink) !important;
+  color: var(--nous-bg) !important;
+  transform: none !important;
+}
+
+#app h1,
+#app h2,
+#app h3,
+#app .main-title,
+#app .hero-title,
+#app .founder-title,
+#app .battle-header h1 {
+  color: var(--nous-ink) !important;
+  font-family: "Space Grotesk", "Noto Sans TC", sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.055em !important;
+  line-height: 0.88 !important;
+  text-shadow: none !important;
+}
+
+#app .main-title,
+#app .hero-title,
+#app .founder-title {
+  max-width: 1120px;
+  font-size: clamp(58px, 11vw, 168px) !important;
+}
+
+#app .hero-desc,
+#app .section-desc,
+#app .founder-card-desc,
+#app p,
+#app .description,
+#app .summary-text,
+#app .fact-text {
+  color: var(--nous-muted) !important;
+  line-height: 1.65 !important;
+}
+
+#app .gradient-text,
+#app .highlight-orange,
+#app .highlight-bold {
+  background: none !important;
+  color: var(--nous-ink) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+#app .logo-container,
+#app .hero-logo-container {
+  position: relative !important;
+  display: grid !important;
+  min-height: clamp(260px, 38vw, 520px) !important;
+  border-top: 2px solid var(--nous-line) !important;
+  border-bottom: 2px solid var(--nous-line) !important;
+  background:
+    linear-gradient(rgba(244, 239, 228, 0.9), rgba(244, 239, 228, 0.9)),
+    url("/cooked-node-map.svg") center / cover no-repeat !important;
+  overflow: hidden !important;
+}
+
+#app .hero-logo,
+#app img[src*="MiroFish_logo"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#app .logo-container::before,
+#app .hero-logo-container::before {
+  content: "COOKED?";
+  position: absolute;
+  left: clamp(22px, 5vw, 72px);
+  right: clamp(8px, 2vw, 32px);
+  bottom: clamp(52px, 8vw, 104px);
+  color: var(--nous-ink);
+  font-family: "Space Grotesk", "Arial Black", sans-serif;
+  font-size: clamp(58px, 13vw, 176px);
+  font-weight: 900;
+  letter-spacing: 0;
+  line-height: 0.82;
+  text-transform: uppercase;
+}
+
+#app .logo-container::after,
+#app .hero-logo-container::after {
+  content: "創業輿論模擬 / 知識圖譜 / 多代理 plaza";
+  position: absolute;
+  left: clamp(26px, 5vw, 76px);
+  bottom: clamp(22px, 4vw, 44px);
+  color: var(--nous-ink);
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: clamp(11px, 1.2vw, 16px);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+#app .content-area {
+  gap: 0 !important;
+  padding: 18px !important;
+  background: transparent !important;
+}
+
+#app .panel-wrapper,
+#app .left-panel,
+#app .right-panel,
+#app .console-box,
+#app .metric-card,
+#app .workflow-item,
+#app .founder-card,
+#app .history-card,
+#app .report-card,
+#app .simulation-card,
+#app .analysis-card,
+#app .step-container,
+#app .step-card,
+#app .env-card,
+#app .config-card,
+#app .status-card,
+#app .agent-card,
+#app .profile-card,
+#app .post-card,
+#app .comment-card,
+#app .log-panel,
+#app .control-panel,
+#app .report-section,
+#app .interaction-panel,
+#app .graph-legend,
+#app .edge-labels-toggle,
+#app .detail-panel,
+#app .graph-building-hint,
+#app .graph-state {
+  border: 1px solid var(--nous-line) !important;
+  border-radius: var(--nous-radius) !important;
+  background: rgba(251, 247, 238, 0.72) !important;
+  color: var(--nous-ink) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(10px);
+}
+
+#app .panel-wrapper {
+  overflow: hidden !important;
+}
+
+#app .panel-header,
+#app .console-header,
+#app .steps-header,
+#app .founder-header,
+#app .card-header,
+#app .step-header,
+#app .env-header,
+#app .simulation-header,
+#app .report-header {
+  border-bottom: 1px solid var(--nous-line) !important;
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+#app .panel-title,
+#app .workflow-step,
+#app .status-indicator,
+#app .round-counter,
+#app .cost-chip,
+#app .model-badge,
+#app .tag-row span,
+#app .founder-tag,
+#app .console-label,
+#app .legend-title,
+#app .section-title,
+#app .detail-title,
+#app .toggle-label,
+#app .info-label,
+#app .stat-label,
+#app .preview-title {
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+  border-radius: 0 !important;
+  font-family: "JetBrains Mono", "Courier New", monospace !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+#app .panel-title::before {
+  content: "NODES / ";
+  color: var(--nous-muted);
+}
+
+#app .status-indicator.completed,
+#app .status-indicator.ready,
+#app .badge.success {
+  color: var(--nous-ink) !important;
+}
+
+#app .status-indicator.error,
+#app .badge.error {
+  color: var(--nous-warn) !important;
+}
+
+#app .dot,
+#app .header-dot {
+  background: var(--nous-ink) !important;
+  box-shadow: none !important;
+}
+
+#app .view-switcher {
+  display: flex !important;
+  border: 1px solid var(--nous-line) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  padding: 3px !important;
+}
+
+#app .switch-btn {
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--nous-muted) !important;
+  font-family: "JetBrains Mono", "Courier New", monospace !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+#app .switch-btn.active {
+  background: var(--nous-ink) !important;
+  color: var(--nous-bg) !important;
+  box-shadow: none !important;
+}
+
+#app .header-tools .tool-btn,
+#app .tool-btn,
+#app .start-engine-btn,
+#app .run-btn,
+#app .primary-btn,
+#app .ai-gen-btn,
+#app .control-btn,
+#app .action-btn,
+#app .generate-btn,
+#app .next-btn,
+#app .back-btn,
+#app button {
+  border: 1px solid var(--nous-line) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+  box-shadow: none !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  white-space: nowrap !important;
+}
+
+#app textarea,
+#app input,
+#app select,
+#app .code-input {
+  border: 1px solid var(--nous-line) !important;
+  border-radius: 0 !important;
+  background: rgba(251, 247, 238, 0.88) !important;
+  color: var(--nous-ink) !important;
+  box-shadow: none !important;
+}
+
+#app textarea:focus,
+#app input:focus,
+#app select:focus,
+#app .code-input:focus {
+  outline: 2px solid var(--nous-ink) !important;
+  outline-offset: 2px !important;
+}
+
+#app .upload-zone {
+  border: 1px dashed var(--nous-line) !important;
+  border-radius: 0 !important;
+  background: rgba(251, 247, 238, 0.52) !important;
+}
+
+#app .graph-panel {
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+}
+
+#app .graph-container {
+  background:
+    linear-gradient(90deg, rgba(17, 17, 15, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(17, 17, 15, 0.04) 1px, transparent 1px),
+    var(--nous-bg) !important;
+  background-size: 34px 34px, 34px 34px, auto !important;
+}
+
+#app .graph-svg {
+  filter: grayscale(1) contrast(1.1) !important;
+}
+
+#app .graph-svg text {
+  fill: var(--nous-ink) !important;
+  paint-order: stroke;
+  stroke: var(--nous-bg);
+  stroke-width: 4px;
+  font-family: "JetBrains Mono", "Courier New", monospace !important;
+  font-size: 11px !important;
+  letter-spacing: 0 !important;
+}
+
+#app .legend-label,
+#app .detail-label,
+#app .property-key,
+#app .detail-value,
+#app .property-value {
+  color: var(--nous-ink) !important;
+}
+
+#app .detail-type-badge,
+#app .label-tag,
+#app .episode-tag,
+#app .topic-tag,
+#app .meta-tag {
+  border: 1px solid var(--nous-line) !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+}
+
+#app .mono,
+#app code,
+#app pre,
+#app .api-note,
+#app .log-id,
+#app .info-value,
+#app .stat-value {
+  font-family: "JetBrains Mono", "Courier New", monospace !important;
+}
+
+#app .api-note,
+#app .log-id {
+  color: var(--nous-muted) !important;
+}
+
+#app .stat-value,
+#app .metric-value,
+#app .info-value {
+  color: var(--nous-ink) !important;
+  font-weight: 900 !important;
+}
+
+#app .badge,
+#app .status-indicator,
+#app .step-status,
+#app .workflow-step,
+#app .info-label,
+#app .stat-label {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+}
+
+#app .info-row,
+#app .config-item,
+#app .auto-meta-row {
+  display: grid !important;
+  grid-template-columns: minmax(72px, max-content) minmax(0, 1fr) !important;
+  gap: 10px !important;
+  align-items: start !important;
+}
+
+#app .info-value,
+#app .config-item-value,
+#app .profile-bio,
+#app .description {
+  overflow-wrap: anywhere !important;
+}
+
+#app .card-header,
+#app .step-header {
+  gap: 12px !important;
+  align-items: flex-start !important;
+}
+
+#app .step-info,
+#app .card-header .step-info {
+  min-width: 0 !important;
+}
+
+#app .step-title,
+#app .header-title {
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+#app .timeline-line,
+#app .wf-step-line {
+  background: var(--nous-line) !important;
+}
+
+#app .message,
+#app .chat-message,
+#app .agent-message,
+#app .user-message {
+  border: 1px solid var(--nous-line) !important;
+  border-radius: 0 !important;
+  background: rgba(251, 247, 238, 0.7) !important;
+  color: var(--nous-ink) !important;
+}
+
+#app .empty-start-state {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  padding: clamp(28px, 6vw, 72px);
+  background:
+    linear-gradient(90deg, rgba(17, 17, 15, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(17, 17, 15, 0.04) 1px, transparent 1px),
+    rgba(251, 247, 238, 0.78);
+  background-size: 34px 34px, 34px 34px, auto;
+}
+
+#app .empty-start-state::before {
+  content: "";
+  width: min(100%, 520px);
+  aspect-ratio: 3.6 / 1;
+  background: url("/cooked-logo.svg") left center / contain no-repeat;
+  filter: grayscale(1);
+}
+
+#app .empty-start-state .empty-kicker {
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--nous-muted);
+}
+
+#app .empty-start-state h2 {
+  max-width: 760px;
+  margin: 0;
+  font-size: clamp(42px, 8vw, 112px) !important;
+}
+
+#app .empty-start-state p {
+  max-width: 680px;
+  margin: 0;
+  font-size: clamp(16px, 2vw, 22px);
+}
+
+#app .empty-start-state .primary-btn {
+  width: fit-content;
+  padding: 12px 18px !important;
+}
+
+#app .empty-start-state .empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+#app .empty-start-state .secondary-btn {
+  width: fit-content;
+  padding: 12px 18px !important;
+  border-style: dashed !important;
+}
+
+#app .system-logs,
+#app .console-logs {
+  border: 1px solid var(--nous-line) !important;
+  border-radius: 0 !important;
+  background: rgba(251, 247, 238, 0.86) !important;
+  color: var(--nous-ink) !important;
+  box-shadow: none !important;
+}
+
+#app .system-logs .log-header,
+#app .console-logs .log-header {
+  border-bottom: 1px solid var(--nous-line) !important;
+  background: transparent !important;
+  color: var(--nous-ink) !important;
+}
+
+#app .system-logs .log-title,
+#app .console-logs .log-title,
+#app .system-logs .log-id,
+#app .console-logs .log-id {
+  color: var(--nous-ink) !important;
+  font-family: "JetBrains Mono", "Courier New", monospace !important;
+  letter-spacing: 0.12em !important;
+}
+
+#app .system-logs .log-content,
+#app .console-logs .log-content {
+  background:
+    linear-gradient(90deg, rgba(17, 17, 15, 0.035) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(17, 17, 15, 0.035) 1px, transparent 1px),
+    var(--nous-bg) !important;
+  background-size: 28px 28px, 28px 28px, auto !important;
+  color: var(--nous-ink) !important;
+}
+
+#app .system-logs .log-time,
+#app .console-logs .log-time,
+#app .system-logs .log-msg,
+#app .console-logs .log-msg {
+  color: var(--nous-ink) !important;
+}
+
+#app .scroll-container,
+#app .profiles-list,
+#app .logs-container {
+  scrollbar-color: var(--nous-ink) var(--nous-bg);
+}
+
+@media (max-width: 760px) {
+  body::after {
+    inset: 8px;
+  }
+
+  body::before {
+    left: 14px;
+    right: 14px;
+    bottom: 10px;
+    text-align: center;
+  }
+
+  #app .app-header,
+  #app .navbar,
+  #app .header,
+  #app .top-header {
+    min-height: 64px !important;
+  }
+
+  #app .brand::after,
+  #app .nav-brand::after {
+    display: none;
+  }
+
+  #app .content-area,
+  #app .dashboard-section,
+  #app .main-content {
+    grid-template-columns: 1fr !important;
+  }
+
+  #app .content-area {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #app .panel-wrapper,
+  #app .left-panel,
+  #app .right-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #app .header-tools,
+  #app .panel-header {
+    flex-wrap: wrap !important;
+  }
+
+  #app .header-tools .tool-btn,
+  #app .tool-btn {
+    min-width: 44px !important;
+  }
+}
+
