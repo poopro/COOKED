@@ -42,7 +42,7 @@
         <div class="hero-right">
           <!-- Logo 區 -->
           <div class="logo-container">
-            <img src="../assets/logo/MiroFish_logo_left.jpeg" alt="COOKED? Logo" class="hero-logo" />
+            <img src="../assets/logo/cooked-logo-left.jpeg" alt="COOKED? Logo" class="hero-logo" />
           </div>
           
           <button class="scroll-down-btn" @click="scrollToBottom">

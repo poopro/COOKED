@@ -1,11 +1,11 @@
 @echo off
 REM ============================================================
-REM  MiroFish - repaired one-click launcher
+REM  COOKED? - repaired one-click launcher
 REM  Backend (Flask, port 5001) + Frontend (Vite, port 5173)
 REM
 REM  ASCII-only launcher.
 REM ============================================================
-title MiroFish Launcher
+title COOKED? Launcher
 chcp 65001 >nul 2>&1
 cd /d "%~dp0"
 
@@ -65,8 +65,8 @@ if not errorlevel 1 goto err_placeholder_zep
 echo  [4/5] API keys look set.
 
 echo  [5/5] launching backend and frontend ...
-start "MiroFish Backend [5001]" cmd /k "chcp 65001 >nul && cd /d %CD%\backend && set FLASK_APP=app && set FLASK_DEBUG=True && echo === MiroFish Backend === && echo Port: 5001 && echo. && ""%PY_EXE%"" -m flask run --port 5001 --host 0.0.0.0"
-start "MiroFish Frontend [5173]" cmd /k "chcp 65001 >nul && cd /d %CD%\frontend && echo === MiroFish Frontend === && echo Port: 5173 && echo. && node node_modules\vite\bin\vite.js --host 0.0.0.0 --configLoader runner"
+start "COOKED? Backend [5001]" cmd /k "chcp 65001 >nul && cd /d %CD%\backend && set FLASK_APP=app && set FLASK_DEBUG=True && echo === COOKED? Backend === && echo Port: 5001 && echo. && ""%PY_EXE%"" -m flask run --port 5001 --host 0.0.0.0"
+start "COOKED? Frontend [5173]" cmd /k "chcp 65001 >nul && cd /d %CD%\frontend && echo === COOKED? Frontend === && echo Port: 5173 && echo. && node node_modules\vite\bin\vite.js --host 0.0.0.0 --configLoader runner"
 
 echo  waiting ~8s for services ...
 timeout /t 8 /nobreak >nul

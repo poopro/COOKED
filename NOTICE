@@ -1,0 +1,10 @@
+COOKED?
+
+This project is a modified version of MiroFish:
+https://github.com/666ghj/MiroFish
+
+The original project is licensed under the GNU Affero General Public
+License v3.0. This modified version preserves that license; see LICENSE.
+
+Modifications in this repository are maintained by poopro and include
+branding, launcher, localization, workflow, and demo changes.

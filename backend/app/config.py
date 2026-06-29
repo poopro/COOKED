@@ -1,4 +1,4 @@
-﻿"""MiroFish backend configuration."""
+﻿"""COOKED? backend configuration."""
 
 import os
 from dotenv import load_dotenv
@@ -24,7 +24,7 @@ except Exception:
 class Config:
     """Flask app configuration."""
 
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'mirofish-secret-key')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'cooked-secret-key')
     DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     JSON_AS_ASCII = False
 

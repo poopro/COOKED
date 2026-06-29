@@ -1,13 +1,13 @@
 @echo off
 REM ============================================================
-REM  MiroFish - one-click stopper
+REM  COOKED? - one-click stopper
 REM  Kills whatever is listening on port 5001 and 5173.
 REM
 REM  IMPORTANT: ASCII-only. Do not add Chinese characters.
 REM ============================================================
 setlocal
 chcp 65001 >nul 2>&1
-title MiroFish Stopper
+title COOKED? Stopper
 
 cls
 echo.
@@ -31,12 +31,12 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":5173" ^| findstr "LISTENING
 )
 
 REM ---------- Close leftover launcher windows ----------
-taskkill /FI "WINDOWTITLE eq MiroFish Backend*" /F >nul 2>&1
-taskkill /FI "WINDOWTITLE eq MiroFish Frontend*" /F >nul 2>&1
+taskkill /FI "WINDOWTITLE eq COOKED? Backend*" /F >nul 2>&1
+taskkill /FI "WINDOWTITLE eq COOKED? Frontend*" /F >nul 2>&1
 
 echo.
 echo  ============================================================
-echo   All MiroFish services stopped.
+echo   All COOKED? services stopped.
 echo  ============================================================
 echo.
 

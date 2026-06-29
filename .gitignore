@@ -25,6 +25,7 @@ dist/
 # IDE  
 .idea/  
 .vscode/  
+frontend/.claude/
   
 # OS  
 .DS_Store  

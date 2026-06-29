@@ -35,7 +35,7 @@ from ..utils.logger import get_logger
 from .simulation_manager import SimulationManager
 from .simulation_runner import SimulationRunner, AgentAction
 
-logger = get_logger("mirofish.purchase_intent")
+logger = get_logger("cooked.purchase_intent")
 
 
 # ============================================================================

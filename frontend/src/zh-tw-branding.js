@@ -1,9 +1,9 @@
 ﻿const appTitle = 'COOKED? - 創業輿論模擬沙盒'
 
 const exactText = new Map([
-  ['MIROFISH', 'COOKED?'],
-  ['MiroFish', 'COOKED?'],
-  ['MirrorFish', 'COOKED?'],
+  ['COOKED?', 'COOKED?'],
+  ['COOKED?', 'COOKED?'],
+  ['COOKED?', 'COOKED?'],
   ['Graph Relationship Visualization', '知識圖譜關係視覺化'],
   ['Refresh', '重新整理'],
   ['Node Details', '節點詳情'],
@@ -72,10 +72,10 @@ const exactText = new Map([
 ])
 
 const phraseText = [
-  [/MiroFish-Founder v0\.2/g, 'COOKED? DoomTest v0.2'],
-  [/MIROFISH/g, 'COOKED?'],
-  [/MiroFish/g, 'COOKED?'],
-  [/MirrorFish/g, 'COOKED?'],
+  [/COOKED\?-Founder v0\.2/g, 'COOKED? DoomTest v0.2'],
+  [/COOKED\?/g, 'COOKED?'],
+  [/COOKED\?/g, 'COOKED?'],
+  [/COOKED\?/g, 'COOKED?'],
   [/Github/g, 'GitHub'],
   [/Graph Relationship Visualization/g, '知識圖譜關係視覺化'],
   [/Prediction Report/g, '預測報告'],

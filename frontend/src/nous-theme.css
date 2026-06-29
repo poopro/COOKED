@@ -196,7 +196,7 @@ body::after {
 }
 
 #app .hero-logo,
-#app img[src*="MiroFish_logo"] {
+#app img[src*="cooked-logo"] {
   opacity: 0 !important;
   pointer-events: none !important;
 }
