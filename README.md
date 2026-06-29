@@ -1,267 +1,430 @@
-# COOKED? — 虛擬消費者社群測試平台
+# COOKED?
 
-> **燒錢前，先讓 1,000 個 AI 消費者幫你跑一輪。**
-> 上傳你的點子（PDF / Markdown / 文字）→ 5 分鐘後知道：會不會紅？誰會買？誰會酸？為什麼？怎麼改？
+<p align="center">
+  <img src="frontend/public/cooked-logo.svg" alt="COOKED? logo" width="420">
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-v0.3%20Founder%20Edition-purple" alt="Status">
-  <img src="https://img.shields.io/badge/stack-Vue3%20%2B%20Flask%20%2B%20OASIS-blue" alt="Stack">
+  <img src="https://img.shields.io/badge/frontend-Vue%203%20%2B%20Vite-42b883" alt="Frontend">
+  <img src="https://img.shields.io/badge/backend-Flask%20%2B%20Python-3776ab" alt="Backend">
   <img src="https://img.shields.io/badge/license-AGPL--3.0-blue" alt="License">
-  <img src="https://img.shields.io/badge/modified%20from-cooked-orange" alt="Modified From COOKED?">
+  <img src="https://img.shields.io/badge/modified%20from-666ghj%2FMiroFish-orange" alt="Modified from 666ghj/MiroFish">
 </p>
 
----
+COOKED? is a local-first virtual market testing lab for early product ideas, startup pitches, campaigns, and positioning experiments. Upload a PDF, Markdown file, or plain text idea, then let the system turn it into a simulated public conversation with AI agents, graph memory, social dynamics, and a final market-readiness report.
 
-## 🇬🇧 English
+The short version: COOKED? helps you learn whether an idea is compelling before you spend real money building, launching, or pitching it.
 
-**COOKED?** is a **virtual consumer community testing platform** that simulates real-world market feedback before you spend a single dollar on product development.
+This repository is a modified version of [666ghj/MiroFish](https://github.com/666ghj/MiroFish). The original project is licensed under the GNU Affero General Public License v3.0, and this modified version keeps that license. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
-Based on **[COOKED?](https://github.com/666ghj/MiroFish)** and modified / enhanced by **poopro**, COOKED? lets you upload your business idea (PDF, Markdown, or plain text), then deploys a swarm of **1,000+ AI agents** with unique personalities, memories, and social behaviors into a simulated dual-platform ecosystem (Twitter-like + Reddit-like). Within minutes, you get actionable market intelligence that would traditionally cost tens of thousands of dollars in focus groups and market research.
+## What COOKED? Does
 
-### Why COOKED?? Our Advantages Over Traditional Approaches and COOKED?
+COOKED? simulates how a product idea might be received by different groups of people. It is not just a chatbot that says whether an idea is good. The app builds a miniature market environment, generates agent personas, runs conversations across social-style platforms, and turns the result into a report.
 
-| Dimension | Traditional Market Research | Basic AI Chatbot Testing | **COOKED? (this fork)** |
-|---|---|---|---|
-| **Cost** | $50K–$500K per focus group / MVP | Nearly free, but useless | **~$0.50 per simulation run** |
-| **Time** | Weeks to months | Minutes, but shallow | **5 minutes for deep insight** |
-| **Feedback Quality** | People are polite, lie to be nice | Generic averaged response | **1,000 hostile, honest, diverse AI consumers arguing with each other** |
-| **Consumer Behavior** | No real social dynamics | No group effects | **Full social simulation: echo chambers, opinion leaders, bandwagon effects, pile-ons** |
-| **Memory & Consistency** | Humans remember; AI forgets | No memory between turns | **Zep-powered time-series memory per agent — they hold grudges, fall in love, change minds** |
-| **Dual-Platform Insight** | You pick one channel and pray | N/A | **Simultaneous Twitter-like + Reddit-like platforms — see how the same idea plays differently** |
-| **Purchase Intent** | Wait for real sales data | Guess based on thumbs up | **12-factor attribution model: price sensitivity, trust, social proof, competitor comparison, etc.** |
-| **Persona Source** | Generic demographics | Random LLM personas | **GraphRAG-extracted personas FROM YOUR ACTUAL DOCUMENT — real stakeholders, not random Americans** |
-| **Data Privacy** | Risk of leaking your idea to real testers | Depends on the platform | **100% local/simulated — your idea never leaves your machine** |
+The workflow looks like this:
 
-### Key Advantages of This Fork (poopro/COOKED?)
-
-- **Enhanced `.gitignore`** — `.env`, uploads, logs, IDE files properly excluded
-- **Proper `main` branch** — aligned with GitHub standard
-- **Improved README** — clear bilingual documentation
-- **Preserved full original functionality** from COOKED?
-
----
-
-## 🇹🇼 繁體中文
-
-### 這是什麼？
-
-**文件 → GraphRAG（Zep）→ 大量有差異的 Agent → OASIS 雙平台社群模擬（類 Twitter + 類 Reddit）→ 報告、訪談、問卷、購買意願評估。**
-
-和「叫 ChatGPT 扮演一百種人」不同：這裡的 Agent **會互相看貼文、點讚、留言、被人際關係影響**，並有 **時序記憶**（不會每輪人格亂跳）。
-
-### 為什麼需要 COOKED?？
-
-你不需要先燒錢、不需要先辭職、不需要先做產品。
-
-COOKED? 能讓你在 **5 分鐘內、只花 ~$0.50 美金**，就看到你的點子在虛擬市場上的真實反應——包括誰會買、誰會酸、為什麼不买。
-
-### 與 COOKED? 的關係
-
-本倉庫基於 [666ghj/COOKED?](https://github.com/666ghj/MiroFish) 修改而成（french: **miro** = 看、觀察；**fish** = 釣魚/探索），在此基礎上：
-- 修正分支結構（`main` 而非 `master`）
-- 增強 `.gitignore` 排除敏感檔案
-- 優化文件與說明
-
-### 核心優勢
-
-#### 🎯 創新 1 — 不是「一個 AI 給平均答案」，是「一千個有差異的 AI 互相吵」
-
-我們用 [OASIS](https://github.com/camel-ai/oasis) 模擬一個迷你版 Twitter + Reddit：
-- 每個 AI 都有自己的年齡、職業、MBTI、興趣、口頭禪、偏見
-- 每個 AI 看得到別人的貼文、會按讚、會酸、會轉發、會被影響
-- 整個系統會出現**真實社群才有的「群眾效應」**
-
-#### 🎯 創新 2 — Agent 不是憑空生的，是從你的文件抽出來的
-
-```
-你上傳的 PDF / Markdown
-        ↓
-LLM 萃取裡面提到的人、組織、品牌、地點、事件
-        ↓
-建成 GraphRAG 知識圖譜（用 Zep Cloud）
-        ↓
-每個圖譜節點 → 一個有真實背景的 AI Agent
+```text
+Upload idea or document
+        |
+        v
+Extract entities, claims, value props, risks, and target users
+        |
+        v
+Build a graph-backed project memory
+        |
+        v
+Generate simulated public roles and stakeholder agents
+        |
+        v
+Run a dual-platform discussion
+        |
+        v
+Score purchase intent, objections, risks, and next moves
+        |
+        v
+Produce a report you can use for iteration
 ```
 
-#### 🎯 創新 3 — Agent 有「時序記憶」，不會講話前後矛盾
+## Why It Exists
 
-每個 AI Agent 都掛在 [Zep](https://www.getzep.com/) 的時序記憶系統上，所以行為連貫、會「黑掉」、會「真愛粉」。
+Most early-stage validation is slow, expensive, or too polite to be useful.
 
-#### 🎯 創新 4 — 雙平台並行 + 購買意願評估
+Focus groups can be expensive. Surveys often flatten nuance. A normal LLM chat can give a neat answer, but it usually does not create disagreement, social pressure, second-order reactions, or changing opinions over time.
 
-Info Plaza（短訊息病毒擴散）+ Topic Community（長文理性討論），加上 12 維度購買意願歸因分析。
+COOKED? is built for the messy middle:
 
----
+- Will people understand the idea?
+- Who gets excited first?
+- Who attacks it?
+- What are the strongest objections?
+- Does the pitch survive social discussion?
+- Which features sound valuable, and which sound fake?
+- Is the idea undercooked, overhyped, niche, or actually promising?
 
-## TL;DR — 30 秒看懂
+It is meant to be a fast pre-flight simulator for product judgment. It does not replace real users, but it can help you reach real users with sharper questions.
 
-| | 傳統做法 | COOKED? |
-|---|---|---|
-| **想知道點子會不會紅** | 直接做 MVP 燒幾十萬 | 5 分鐘虛擬模擬，~$0.50 |
-| **想知道目標用戶怎麼想** | 焦點訪談（1 場 $5–20 萬） | 直接跟任何一位 AI 消費者對話 |
-| **想知道廣告會不會被噓** | 上線投廣再看數據 | 上線前 1,000 個 AI 在虛擬社群先吵一輪 |
-| **想知道誰會買** | 等付款數據 | 「目標客群 80% 會買、路人只有 20% 會買」直接告訴你 |
-| **想知道為什麼不买** | 看評論 / 退貨單 | 「33% 因為價格、22% 因為不信任」可行動歸因 % |
+## Core Features
 
----
+### Document-Based Idea Intake
 
-## 🚀 快速開始
+Upload an idea as PDF, Markdown, or text. COOKED? parses the content and extracts the market context it needs for simulation.
 
-### 環境需求
+Useful inputs include:
 
-- Python 3.10+
-- Node.js 18+
-- OpenRouter API Key（[申請](https://openrouter.ai/)）
-- Zep Cloud API Key（[申請](https://www.getzep.com/)）
+- Startup one-pagers
+- Product requirement drafts
+- Landing page copy
+- Pitch decks exported as PDF
+- Campaign concepts
+- Feature specs
+- Research notes
+- Founder memos
 
-### Windows（推薦，最簡單）
+### GraphRAG-Style Project Memory
 
-雙擊 **`run.bat`**：自動檢查依賴、啟動後端 `5001`、前端 `5173`、並開啟瀏覽器。
-首次安裝約需 **5–10 分鐘**（下載 Python 套件）。
+COOKED? organizes your uploaded material into a graph-backed memory layer. Agents can refer back to the project context instead of responding from generic assumptions only.
 
-關閉用 **`stop.bat`**。
+This is useful when your idea has specific constraints, named competitors, stakeholders, pricing, user segments, or launch channels.
 
-### macOS / Linux（手動）
+### Simulated Public Agents
+
+The system generates diverse agents representing customers, critics, vendors, observers, and other market voices. They are designed to disagree, react, question, and influence each other.
+
+That makes the output more useful than a single averaged response.
+
+### Dual-Platform Social Simulation
+
+COOKED? models two different social surfaces:
+
+- A fast, short-form discussion environment
+- A slower, thread-oriented community environment
+
+The same idea can perform differently depending on the social context. A punchy consumer product might spread well in one environment and get torn apart in another.
+
+### Purchase Intent and Risk Evaluation
+
+The report layer summarizes signals such as:
+
+- Purchase motivation
+- Trust and credibility
+- Price sensitivity
+- Social proof
+- Differentiation
+- Adoption friction
+- Competitive pressure
+- Confusing claims
+- Messaging gaps
+- Critical objections
+
+The goal is not to produce a magic score. The goal is to show why the score happened.
+
+### History and Replay
+
+The modified COOKED? build includes history-oriented UI work so previous runs can be reviewed. This is useful when comparing revisions of the same idea.
+
+## Who It Is For
+
+COOKED? is especially useful for:
+
+- Solo founders testing an idea before building an MVP
+- Indie hackers checking whether a landing page sounds believable
+- Students preparing product or entrepreneurship projects
+- Marketers stress-testing campaign angles
+- Product managers comparing feature narratives
+- Researchers exploring simulated public opinion workflows
+- Builders who want a private local sandbox before exposing an idea
+
+## What It Is Not
+
+COOKED? is not a real market study. It does not replace:
+
+- Real customer interviews
+- Sales calls
+- Paid acquisition tests
+- Usability testing
+- Legal, financial, or medical review
+- Production-grade forecasting
+
+Treat the output as a structured simulation, not as truth. The best use is to find hypotheses, objections, and blind spots faster.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Vue 3, Vite, D3 |
+| Backend | Python, Flask |
+| Memory and graph layer | Zep Cloud integration |
+| LLM provider | OpenRouter-compatible API configuration |
+| Simulation scripts | Python-based parallel social simulation |
+| File parsing | PDF and text parsing utilities |
+| Local launch | Windows batch scripts, manual Unix-style commands |
+
+## Repository Structure
+
+```text
+COOKED/
+├── backend/
+│   ├── app/
+│   │   ├── api/                  # Flask API routes
+│   │   ├── models/               # Data models
+│   │   ├── services/             # Graph, simulation, reports, LLM calls
+│   │   └── utils/                # Logging, parsing, locale, retry helpers
+│   ├── scripts/                  # Simulation runners
+│   └── start-backend.bat         # Windows backend launcher
+├── frontend/
+│   ├── public/                   # Static browser assets
+│   ├── src/
+│   │   ├── api/                  # Frontend API clients
+│   │   ├── assets/               # Logo and visual assets
+│   │   ├── components/           # Vue components
+│   │   ├── router/               # Vue Router setup
+│   │   └── views/                # App screens
+│   └── start-frontend.bat        # Windows frontend launcher
+├── examples/                     # Demo startup ideas
+├── locales/                      # UI language strings
+├── static/                       # Static images
+├── run.bat                       # Windows one-click launcher
+├── stop.bat                      # Windows stopper
+├── LICENSE                       # AGPL-3.0 license text
+└── NOTICE                        # Upstream attribution and modification notice
+```
+
+## Requirements
+
+Install these before running the app:
+
+- Python 3.10 or newer
+- Node.js 18 or newer
+- npm
+- An OpenRouter-compatible API key
+- A Zep Cloud API key and tenant ID
+
+The project is designed for local development. Keep credentials in `.env`; do not commit real keys.
+
+## Quick Start on Windows
+
+The easiest path is:
+
+```bat
+run.bat
+```
+
+The launcher starts:
+
+- Backend API on `http://localhost:5001`
+- Frontend app on `http://localhost:5173`
+
+To stop the local services:
+
+```bat
+stop.bat
+```
+
+There are also separate launchers if you want to run each side manually:
+
+```bat
+backend\start-backend.bat
+frontend\start-frontend.bat
+```
+
+## Manual Setup
+
+### Backend
 
 ```bash
-# 後端
-cd backend && python -m venv .venv && source .venv/bin/activate
+cd backend
+python -m venv .venv
+
+# Windows
+.venv\Scripts\activate
+
+# macOS or Linux
+source .venv/bin/activate
+
 pip install --ignore-requires-python flask flask-cors python-dotenv zep-cloud httpx pypdf camel-oasis
-export FLASK_APP=app && flask run --port 5001
-
-# 前端（新終端機）
-cd frontend && npm install && npm run dev
+set FLASK_APP=app
+flask run --port 5001
 ```
 
-### 配置 `.env`
-
-複製 `.env.example` 為 `.env`，至少填入：
+On macOS or Linux, use:
 
 ```bash
-LLM_API_KEY=sk-or-v1-你的 OpenRouter API Key
+export FLASK_APP=app
+flask run --port 5001
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Then open:
+
+```text
+http://localhost:5173
+```
+
+## Environment Variables
+
+Create a `.env` file in the project root or configure the equivalent environment variables for your shell.
+
+```env
+LLM_API_KEY=sk-or-v1-your-openrouter-key
 LLM_BASE_URL=https://openrouter.ai/api/v1
 LLM_MODEL_NAME=google/gemini-2.5-flash-lite
-ZEP_API_KEY=你的 Zep Cloud API Key
-ZEP_TENANT_ID=你的 Zep Tenant ID
+
+ZEP_API_KEY=your-zep-api-key
+ZEP_TENANT_ID=your-zep-tenant-id
 ```
 
-> ⚠️ **`.env` 不會被提交到 Git**（已在 `.gitignore` 中排除）。絕對不要把 API Key 丟到公開倉庫！
+Optional acceleration variables may be supported by the simulation scripts:
 
----
-
-## 五步流程
-
-1. **上傳** 你的點子 → 參考 `examples/business_idea_solo_freelancer_app.md`
-2. **建圖譜** — 本體論 + GraphRAG，從文件抽出「會出現在你市場周遭」的角色
-3. **生成 Agent** — 完整人設（年齡、職業、興趣、MBTI、口頭禪、偏見）
-4. **跑模擬** — Info Plaza（類 Twitter）+ Topic Community（類 Reddit），多輪多 Agent 並行互動
-5. **看結果** — 深度報告 + 交互工具：跟任意 Agent 對話、發問卷、評估購買意願
-
----
-
-## 核心功能
-
-### 🔥 虛擬社群模擬
-
-- 每個 AI Agent 有**獨立的年齡、職業、MBTI、興趣、口頭禪、偏見**
-- Agent 之間**互相影響**：點讚、留言、轉發、被風向影響
-- 出現**真實社群效應**：意見領袖、跟風、輿情翻車
-
-### 🧠 GraphRAG 知識圖譜
-
-你的商業計劃書透過 LLM 萃取 → 建成知識圖譜 → 每個圖譜節點生成對應的 AI Agent，確保模擬人群**真實反映你的市場環境**。
-
-### ⏳ 時序記憶（Zep）
-
-每個 Agent 記得：
-- 上一輪自己發過什麼
-- 誰曾經反駁過他
-- 對品牌累積的態度
-
-行為前後一致、會累積情緒、不會「人格跳轉」。
-
-### 📊 購買意願評估（旗艦功能 v0.3）
-
-- **目標客群（TA）購買率** vs **路人購買率**分開看
-- **12 維度歸因分析**：價格敏感度、信任度、社會證明、競爭比較……
-- 不再是「喜歡/不喜歡」，而是**可執行的百分比歸因**
-
----
-
-## 📁 項目結構
-
-```
-COOKED?/
-├── backend/              # Flask 後端 API（Python）
-│   ├── app.py            # 主應用入口
-│   ├── routes/           # API 路由
-│   ├── services/         # 業務邏輯（Agent 生成、模擬、評估）
-│   ├── .venv/            # Python 虛擬環境（不提交）
-│   └── uploads/          # 用戶上傳檔案（不提交）
-├── frontend/             # Vue 3 前端 SPA
-│   ├── src/
-│   │   ├── views/        # 頁面組件
-│   │   ├── components/   # 可復用組件
-│   │   └── App.vue       # 根組件
-│   └── node_modules/     # （不提交）
-├── examples/             # 範例商業計商業計劃書
-├── static/               # 靜態資源
-├── run.bat               # Windows 一鍵啟動
-├── stop.bat              # Windows 一鍵停止
-├── .env.example          # 環境變數範本
-├── .gitignore            # Git 忽略規則
-├── README.md             # 本檔（繁中 + 英文）
-└── README.long.md        # 商業長文說明（完整版）
+```env
+LLM_BOOST_API_KEY=sk-or-v1-your-second-key
+LLM_BOOST_BASE_URL=https://openrouter.ai/api/v1
+LLM_BOOST_MODEL_NAME=your-fast-model
 ```
 
+Never commit `.env`, API keys, generated uploads, logs, or local virtual environments.
+
+## Running a Demo
+
+The `examples/` folder contains sample idea documents that can be uploaded directly into the app.
+
+Good first tests:
+
+- `examples/business_idea_solo_freelancer_app.md`
+- `examples/business_idea_popup_restaurant.md`
+- `examples/business_idea_risky_dating_app.md`
+
+Suggested demo flow:
+
+1. Start the app with `run.bat`.
+2. Open the frontend.
+3. Upload one of the example Markdown files.
+4. Let COOKED? build the graph.
+5. Generate the simulation environment.
+6. Run the social simulation.
+7. Generate the final report.
+8. Change the original idea and run it again to compare outcomes.
+
+## Product Workflow
+
+### 1. Upload
+
+Start with a rough product idea, memo, or plan. COOKED? does not require a polished pitch. In fact, rough documents are useful because the report can expose which parts are unclear.
+
+### 2. Graph Build
+
+The backend extracts structure from the upload and creates a graph-oriented project memory. This gives later stages something concrete to reference.
+
+### 3. Environment Setup
+
+The app creates simulated roles and discussion settings. This stage turns your idea into a market-like test environment.
+
+### 4. Simulation
+
+Agents react across the simulated social platforms. The goal is to produce disagreement, friction, enthusiasm, skepticism, and social feedback.
+
+### 5. Report
+
+The final report summarizes what happened, what the strongest objections were, who might buy, and what you should change before testing with real people.
+
+## Example Questions COOKED? Can Help Answer
+
+- Is the target user obvious from the pitch?
+- Which segment reacts most positively?
+- What part of the idea sounds fake or overclaimed?
+- What would competitors attack?
+- Does the product need a narrower wedge?
+- Is the pricing believable?
+- Which messaging angle creates the strongest interest?
+- What needs to change before a landing page test?
+- What should be asked in real customer interviews?
+
+## Development Notes
+
+Useful commands:
+
+```bash
+# Frontend production build
+cd frontend
+npm run build
+
+# Backend syntax check
+cd ..
+python -m compileall backend/app
+```
+
+The current app is optimized for local experimentation, not hardened production deployment. Before hosting it publicly, review:
+
+- Authentication
+- File upload limits
+- API key handling
+- CORS settings
+- Rate limits
+- Worker isolation
+- Log retention
+- Zep project separation
+
+## Security and Privacy
+
+COOKED? is intended to run locally. Your uploaded ideas and generated simulation data should stay on your own machine unless you configure external services or deploy the app elsewhere.
+
+Important reminders:
+
+- Do not commit `.env`.
+- Do not commit real uploaded customer documents.
+- Do not commit generated logs or simulation output.
+- Rotate any API key that was accidentally exposed.
+- Review third-party service terms before uploading sensitive documents.
+
+## License
+
+This repository is licensed under the GNU Affero General Public License v3.0. See [LICENSE](LICENSE).
+
+Because AGPL-3.0 has network-use obligations, if you modify this project and make it available over a network, you must provide the corresponding source code under the same license. This README is not legal advice; read the license text and consult counsel if you need certainty.
+
+## Attribution
+
+COOKED? is a modified version of [666ghj/MiroFish](https://github.com/666ghj/MiroFish).
+
+Original basis:
+
+- Repository: [https://github.com/666ghj/MiroFish](https://github.com/666ghj/MiroFish)
+- License: GNU Affero General Public License v3.0
+
+This modified version is maintained by `poopro` and includes COOKED? branding, launcher updates, localization work, history/replay UI additions, demo materials, and repository hygiene changes.
+
+## Roadmap Ideas
+
+Possible future improvements:
+
+- Cleaner cross-platform setup scripts
+- Docker Compose for backend, frontend, and worker services
+- More explicit model selection in the UI
+- Better run comparison between pitch revisions
+- Exportable reports
+- Scenario presets for SaaS, retail, hardware, creator products, and local services
+- Built-in red-team mode for harsher criticism
+- Stronger privacy controls around uploaded files
+- Production deployment guide
+
+## Contributing
+
+Issues and pull requests are welcome. Please keep contributions aligned with the project goal: fast, local-first simulated market feedback for early ideas.
+
+Before opening a pull request:
+
+1. Run `python -m compileall backend/app`.
+2. Run `npm run build` inside `frontend/`.
+3. Avoid committing `.env`, logs, uploads, `node_modules`, or virtual environments.
+4. Keep upstream AGPL attribution intact.
+
 ---
 
-## 🛠️ 技術棧
-
-| 層級 | 技術 | 說明 |
-|---|---|---|
-| **前端** | Vue 3 + Vite | 響應式 SPA，模擬控制台即時更新 |
-| **後端** | Flask (Python) | REST API，處理 Agent 邏輯 |
-| **LLM** | OpenRouter | 彈性接入多個模型（Gemini、Claude、GPT） |
-| **知識圖譜** | Zep Cloud | GraphRAG + 時序記憶系統 |
-| **Agent 框架** | OASIS (Camel-AI) | 多 Agent 社群模擬引擎 |
-| **資料處理** | pypdf, httpx | PDF 解析、API 通訊 |
-
----
-
-## 🛣️ 路線圖
-
-| 階段 | 目標 | 狀態 |
-|---|---|---|
-| **Phase 1** | 單文件 → 單 Agent → 單平台模擬 | ✅ 完成 |
-| **Phase 2** | 多 Agent + 雙平台 + GraphRAG | ✅ 完成 |
-| **Phase 3** | 購買意願評估 + 歸因分析 | ✅ v0.3 實現 |
-| **Phase 4** | SaaS 化、自訂 Agent 模板、API 開放 | 🔜 規劃中 |
-
----
-
-## 🤝 參與貢參與貢獻
-
-歡迎提交 Issue 和 Pull Request！如果想貢獻：
-
-1. Fork 本倉庫
-2. 建立你的功能分支（`git checkout -b feature/amazing-feature`）
-3. 提交修改（`git commit -m 'Add amazing feature'`）
-4. 推送分支（`git push origin feature/amazing-feature`）
-5. 開啟 Pull Request
-
----
-
-## ⚖️ 授權
-
-GNU Affero General Public License v3.0 — 詳見 LICENSE 檔案
-
----
-
-## 📝 修改歷史
-
-本倉庫 fork 自 [666ghj/COOKED?](https://github.com/666ghj/MiroFish)，由 **poopro** 維護。
-主要修改：修正分支結構、強化 `.gitignore` 安全策略、完善中英文文件。
-原始商業計劃書見 `README.long.md`。
-
-<p align="center"><sub>Original basis: COOKED? by 666ghj | Modified & maintained by poopro</sub></p>
+<p align="center"><sub>COOKED? is modified from 666ghj/MiroFish and distributed under AGPL-3.0.</sub></p>
